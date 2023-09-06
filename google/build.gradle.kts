@@ -1,6 +1,7 @@
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
+  id("maven-publish")
 }
 
 android {
@@ -35,4 +36,18 @@ dependencies {
   implementation("com.android.billingclient:billing-ktx:6.0.1")
   testImplementation("junit:junit:4.13.2")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
+}
+
+publishing {
+  publications {
+    register<MavenPublication>("release") {
+      groupId = "com.github.TatsukiIshijima"
+      artifactId = "google-billing"
+      version = "0.1.0-alpha"
+
+      afterEvaluate {
+        from(components["release"])
+      }
+    }
+  }
 }
