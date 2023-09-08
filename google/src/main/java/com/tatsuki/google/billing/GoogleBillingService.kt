@@ -2,9 +2,9 @@ package com.tatsuki.google.billing
 
 interface GoogleBillingService {
 
-  suspend fun connect()
+  suspend fun connect(): ConnectionState
 
-  suspend fun disconnect()
+  fun disconnect()
 
   suspend fun queryProductDetails()
 
