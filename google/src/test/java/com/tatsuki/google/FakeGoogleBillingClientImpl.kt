@@ -48,6 +48,16 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
             .setResponseCode(BillingResponseCode.OK)
             .build(),
       ) : Connect
+
+      data class ConnectFailed(
+        override val isReady: Boolean = false,
+        override val connectionState: ConnectionState = ConnectionState.DISCONNECTED,
+        override val billingResult: BillingResult =
+          BillingResult
+            .newBuilder()
+            .setResponseCode(BillingResponseCode.SERVICE_UNAVAILABLE)
+            .build(),
+      ) : Connect
     }
 
     sealed interface Disconnect : ConnectionPattern {

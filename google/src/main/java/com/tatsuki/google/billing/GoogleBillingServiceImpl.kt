@@ -3,13 +3,14 @@ package com.tatsuki.google.billing
 import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingResult
+import com.tatsuki.google.billing.GoogleBillingServiceException.ConnectFailedException
 import com.tatsuki.google.billing.model.RequestId
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class GoogleBillingServiceImpl(
-  private val billingClient: GoogleBillingClient
+  private val billingClient: GoogleBillingClient,
 ) : GoogleBillingService {
 
   @VisibleForTesting
@@ -32,8 +33,11 @@ class GoogleBillingServiceImpl(
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
               continuation.resume(billingClient.connectionState)
             } else {
-              // TODO: Add exception
-              continuation.resumeWithException(Exception(""))
+              continuation.resumeWithException(
+                ConnectFailedException(
+                  responseCode = billingResult.responseCode
+                )
+              )
             }
           }
 
