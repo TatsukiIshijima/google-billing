@@ -1,27 +1,31 @@
 package com.tatsuki.google.billing
 
+import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import java.util.UUID
 
-internal object ConnectionStateListener : BillingClientStateListener {
+object ConnectionStateListener : BillingClientStateListener {
 
-  private var connectionRequestId: UUID? = null
-  private val onBillingServiceConnectionListenerMap = mutableMapOf<UUID, OnBillingServiceConnectionListener>()
+  @VisibleForTesting
+  var connectionRequestId: UUID? = null
+
+  @VisibleForTesting
+  val onBillingServiceConnectionListenerMap = mutableMapOf<UUID, OnBillingServiceConnectionListener>()
 
   fun addOnBillingServiceConnectionListener(
     requestId: UUID,
     listener: OnBillingServiceConnectionListener
   ) {
-    if (connectionRequestId == null) {
-      connectionRequestId = requestId
-    }
+    connectionRequestId = requestId
     onBillingServiceConnectionListenerMap[requestId] = listener
   }
 
-  fun clearOnBillingServiceConnectionListener() {
-    onBillingServiceConnectionListenerMap.clear()
+  fun removeOnBillingServiceConnectionListener(
+    requestId: UUID
+  ) {
     connectionRequestId = null
+    onBillingServiceConnectionListenerMap.remove(requestId)
   }
 
   override fun onBillingSetupFinished(billingResult: BillingResult) {
