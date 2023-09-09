@@ -1,40 +1,45 @@
 package com.tatsuki.google.billing
 
+import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingResult
+import com.tatsuki.google.billing.model.RequestId
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class GoogleBillingServiceImpl(
-  private val billingClient: BillingClient,
+  private val billingClient: GoogleBillingClient
 ) : GoogleBillingService {
 
-  private val connectionListener = ConnectionStateListener
+  @VisibleForTesting
+  val connectionListener = ConnectionStateListener
 
   override suspend fun connect(): ConnectionState {
+    if (billingClient.isReady) {
+      return billingClient.connectionState
+    }
+
     return suspendCancellableCoroutine { continuation ->
 
-      val requestId = UUID.randomUUID()
+      val requestId = RequestId().value
 
       connectionListener.addOnBillingServiceConnectionListener(
         requestId = requestId,
         listener = object : OnBillingServiceConnectionListener {
           override fun onBillingSetupFinished(billingResult: BillingResult) {
-            connectionListener.clearOnBillingServiceConnectionListener()
+            connectionListener.removeOnBillingServiceConnectionListener(requestId)
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-              val connectionState = ConnectionState.from(billingClient.connectionState)
-              continuation.resume(connectionState)
+              continuation.resume(billingClient.connectionState)
             } else {
+              // TODO: Add exception
               continuation.resumeWithException(Exception(""))
             }
           }
 
           override fun onBillingServiceDisconnected() {
-            connectionListener.clearOnBillingServiceConnectionListener()
-            val connectionState = ConnectionState.from(billingClient.connectionState)
-            continuation.resume(connectionState)
+            connectionListener.removeOnBillingServiceConnectionListener(requestId)
+            continuation.resume(billingClient.connectionState)
           }
         }
       )
@@ -43,7 +48,7 @@ class GoogleBillingServiceImpl(
         endConnectionIfReady()
       }
 
-      billingClient.startConnection(connectionListener)
+      billingClient.connect(connectionListener)
     }
   }
 
@@ -53,7 +58,7 @@ class GoogleBillingServiceImpl(
 
   private fun endConnectionIfReady() {
     if (billingClient.isReady) {
-      billingClient.endConnection()
+      billingClient.disconnect()
     }
   }
 
