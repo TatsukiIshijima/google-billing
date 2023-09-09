@@ -32,9 +32,10 @@ android {
 }
 
 dependencies {
-  implementation("com.android.billingclient:billing:6.0.1")
-  implementation("com.android.billingclient:billing-ktx:6.0.1")
+  api("com.android.billingclient:billing:6.0.1")
+  api("com.android.billingclient:billing-ktx:6.0.1")
   testImplementation("junit:junit:4.13.2")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
 }
 
