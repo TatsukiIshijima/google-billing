@@ -3,8 +3,10 @@ package com.tatsuki.google.billing
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.ProductDetailsResult
 import com.android.billingclient.api.PurchaseHistoryResult
+import com.android.billingclient.api.PurchasesResult
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
+import com.android.billingclient.api.QueryPurchasesParams
 
 interface GoogleBillingClient {
 
@@ -20,7 +22,7 @@ interface GoogleBillingClient {
 
   suspend fun queryPurchaseHistory(params: QueryPurchaseHistoryParams): PurchaseHistoryResult
 
-  suspend fun queryPurchase()
+  suspend fun queryPurchases(params: QueryPurchasesParams): PurchasesResult
 
   suspend fun consumePurchase()
 
