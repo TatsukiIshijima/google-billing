@@ -1,13 +1,13 @@
 package com.tatsuki.google
 
-import com.tatsuki.google.FakeGoogleBillingClientImpl.ConnectionPattern
-import com.tatsuki.google.FakeGoogleBillingClientImpl.QueryProductDetailsPattern
 import com.tatsuki.google.billing.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingServiceException
 import com.tatsuki.google.billing.GoogleBillingServiceImpl
 import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductId
 import com.tatsuki.google.billing.model.ProductType
+import com.tatsuki.google.billing.pattern.ConnectionPattern
+import com.tatsuki.google.billing.pattern.QueryProductDetailsPattern
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.advanceUntilIdle
