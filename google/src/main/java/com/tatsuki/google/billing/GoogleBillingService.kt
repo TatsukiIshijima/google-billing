@@ -14,4 +14,8 @@ interface GoogleBillingService {
   suspend fun queryPurchaseHistory()
 
   suspend fun queryPurchase()
+
+  suspend fun consumePurchase()
+
+  suspend fun acknowledgePurchase()
 }

@@ -37,4 +37,12 @@ class GoogleBillingClientImpl(
   override suspend fun queryPurchase() {
     TODO("Not yet implemented")
   }
+
+  override suspend fun consumePurchase() {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun acknowledgePurchase() {
+    TODO("Not yet implemented")
+  }
 }
