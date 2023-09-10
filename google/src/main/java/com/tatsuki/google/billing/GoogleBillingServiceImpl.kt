@@ -81,11 +81,11 @@ class GoogleBillingServiceImpl(
     }
   }
 
-  override suspend fun queryPurchases() {
+  override suspend fun queryPurchaseHistory() {
 //    TODO("Not yet implemented")
   }
 
-  override suspend fun purchase() {
+  override suspend fun queryPurchase() {
 //    TODO("Not yet implemented")
   }
 }

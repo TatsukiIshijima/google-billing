@@ -30,11 +30,11 @@ class GoogleBillingClientImpl(
     return billingClient.queryProductDetails(params)
   }
 
-  override fun queryPurchases() {
+  override suspend fun queryPurchaseHistory() {
     TODO("Not yet implemented")
   }
 
-  override fun purchase() {
+  override suspend fun queryPurchase() {
     TODO("Not yet implemented")
   }
 }

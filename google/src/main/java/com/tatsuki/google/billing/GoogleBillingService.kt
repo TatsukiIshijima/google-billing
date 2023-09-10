@@ -11,7 +11,7 @@ interface GoogleBillingService {
 
   suspend fun queryProductDetails(products: List<Product>): List<ProductDetails>?
 
-  suspend fun queryPurchases()
+  suspend fun queryPurchaseHistory()
 
-  suspend fun purchase()
+  suspend fun queryPurchase()
 }

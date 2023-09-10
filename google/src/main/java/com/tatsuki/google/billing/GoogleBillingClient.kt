@@ -16,7 +16,7 @@ interface GoogleBillingClient {
 
   suspend fun queryProductDetails(params: QueryProductDetailsParams): ProductDetailsResult
 
-  fun queryPurchases()
+  suspend fun queryPurchaseHistory()
 
-  fun purchase()
+  suspend fun queryPurchase()
 }
