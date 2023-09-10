@@ -3,7 +3,9 @@ package com.tatsuki.google.billing
 import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductId
 import com.tatsuki.google.billing.model.ProductType
+import com.tatsuki.google.billing.pattern.AcknowledgePattern
 import com.tatsuki.google.billing.pattern.ConnectionPattern
+import com.tatsuki.google.billing.pattern.ConsumePattern
 import com.tatsuki.google.billing.pattern.QueryProductDetailsPattern
 import com.tatsuki.google.billing.pattern.QueryPurchaseHistoryPattern
 import com.tatsuki.google.billing.pattern.QueryPurchasesPattern
@@ -191,5 +193,61 @@ class GoogleBillingServiceTest {
 
     val result = task.await().exceptionOrNull()
     assert(result is GoogleBillingServiceException.ServiceUnavailableException)
+  }
+
+  @Test
+  fun callConsume_noExceptionWhenSuccess() = runTest {
+    fakeGoogleBillingClientImpl.setup(ConsumePattern.Success())
+
+    val task = async {
+      runCatching {
+        googleBillingService.consumePurchase("purchaseToken")
+      }
+    }
+
+    val result = task.await().exceptionOrNull()
+    assert(result == null)
+  }
+
+  @Test
+  fun callConsume_exceptionWhenError() = runTest {
+    fakeGoogleBillingClientImpl.setup(ConsumePattern.Error())
+
+    val task = async {
+      runCatching {
+        googleBillingService.consumePurchase("")
+      }
+    }
+
+    val result = task.await().exceptionOrNull()
+    assert(result is GoogleBillingServiceException.ErrorException)
+  }
+
+  @Test
+  fun callAcknowledge_noExceptionWhenSuccess() = runTest {
+    fakeGoogleBillingClientImpl.setup(AcknowledgePattern.Success())
+
+    val task = async {
+      runCatching {
+        googleBillingService.acknowledgePurchase("purchaseToken")
+      }
+    }
+
+    val result = task.await().exceptionOrNull()
+    assert(result == null)
+  }
+
+  @Test
+  fun callAcknowledge_exceptionWhenError() = runTest {
+    fakeGoogleBillingClientImpl.setup(AcknowledgePattern.Error())
+
+    val task = async {
+      runCatching {
+        googleBillingService.acknowledgePurchase("")
+      }
+    }
+
+    val result = task.await().exceptionOrNull()
+    assert(result is GoogleBillingServiceException.ErrorException)
   }
 }
