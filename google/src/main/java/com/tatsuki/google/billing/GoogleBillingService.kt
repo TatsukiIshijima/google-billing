@@ -12,9 +12,9 @@ interface GoogleBillingService {
 
   fun disconnect()
 
-  suspend fun queryProductDetails(products: List<Product>): List<ProductDetails>?
+  suspend fun queryProductDetails(products: List<Product>): List<ProductDetails>
 
-  suspend fun queryPurchaseHistory(productType: ProductType): List<PurchaseHistoryRecord>?
+  suspend fun queryPurchaseHistory(productType: ProductType): List<PurchaseHistoryRecord>
 
   suspend fun queryPurchases(productType: ProductType): List<Purchase>?
 

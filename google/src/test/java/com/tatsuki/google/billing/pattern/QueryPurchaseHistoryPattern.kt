@@ -2,6 +2,7 @@ package com.tatsuki.google.billing.pattern
 
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.PurchaseHistoryResult
 
 sealed interface QueryPurchaseHistoryPattern {
@@ -12,11 +13,13 @@ sealed interface QueryPurchaseHistoryPattern {
       billingResult = BillingResult.newBuilder()
         .setResponseCode(BillingResponseCode.OK)
         .build(),
-      purchaseHistoryRecordList = listOf()
+      purchaseHistoryRecordList = listOf(
+        PurchaseHistoryRecord("", "")
+      )
     )
   ) : QueryPurchaseHistoryPattern
 
-  data class Failure(
+  data class Error(
     override val result: PurchaseHistoryResult = PurchaseHistoryResult(
       billingResult = BillingResult.newBuilder()
         .setResponseCode(BillingResponseCode.ERROR)

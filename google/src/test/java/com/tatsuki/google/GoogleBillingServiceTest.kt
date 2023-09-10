@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import java.lang.Exception
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GoogleBillingServiceTest {
@@ -119,26 +120,28 @@ class GoogleBillingServiceTest {
     }
 
     val result = task.await()
-    assert(result != null)
+    assert(result !is Exception)
   }
 
   @Test
-  fun callQueryProductDetails_returnNullWhenFailure() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryProductDetailsPattern.Failure())
+  fun callQueryProductDetails_returnExceptionWhenError() = runTest {
+    fakeGoogleBillingClientImpl.setup(QueryProductDetailsPattern.Error())
 
     val task = async {
-      googleBillingService.queryProductDetails(
-        products = listOf(
-          Product(
-            id = ProductId("productId"),
-            productType = ProductType.InApp()
+      runCatching {
+        googleBillingService.queryProductDetails(
+          products = listOf(
+            Product(
+              id = ProductId("productId"),
+              productType = ProductType.InApp()
+            )
           )
         )
-      )
+      }
     }
 
-    val result = task.await()
-    assert(result == null)
+    val result = task.await().exceptionOrNull()
+    assert(result is GoogleBillingServiceException.ErrorException)
   }
 
   @Test
@@ -150,19 +153,21 @@ class GoogleBillingServiceTest {
     }
 
     val result = task.await()
-    assert(result != null)
+    assert(result.isNotEmpty())
   }
 
   @Test
   fun callQueryPurchaseHistory_returnHistoryRecordListWhenFailure() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryPurchaseHistoryPattern.Failure())
+    fakeGoogleBillingClientImpl.setup(QueryPurchaseHistoryPattern.Error())
 
     val task = async {
-      googleBillingService.queryPurchaseHistory(ProductType.Subscription())
+      runCatching {
+        googleBillingService.queryPurchaseHistory(ProductType.Subscription())
+      }
     }
 
-    val result = task.await()
-    assert(result == null)
+    val result = task.await().exceptionOrNull()
+    assert(result is GoogleBillingServiceException.ErrorException)
   }
 
   @Test

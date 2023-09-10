@@ -2,6 +2,7 @@ package com.tatsuki.google.billing.pattern
 
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.ProductDetailsResult
 
 sealed interface QueryProductDetailsPattern {
@@ -17,7 +18,7 @@ sealed interface QueryProductDetailsPattern {
       )
   ) : QueryProductDetailsPattern
 
-  data class Failure(
+  data class Error(
     override val result: ProductDetailsResult =
       ProductDetailsResult(
         billingResult = BillingResult.newBuilder()

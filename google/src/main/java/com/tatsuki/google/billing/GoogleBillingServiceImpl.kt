@@ -75,27 +75,27 @@ class GoogleBillingServiceImpl(
     }
   }
 
-  override suspend fun queryProductDetails(products: List<Product>): List<ProductDetails>? {
+  override suspend fun queryProductDetails(products: List<Product>): List<ProductDetails> {
     val queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
       .setProductList(products.map { it.toQueryProduct() })
       .build()
     val queryProductDetailsTask = billingClient.queryProductDetails(queryProductDetailsParams)
     return if (queryProductDetailsTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-      queryProductDetailsTask.productDetailsList
+      queryProductDetailsTask.productDetailsList ?: emptyList()
     } else {
-      null
+      throw queryProductDetailsTask.billingResult.responseCode.toException()
     }
   }
 
-  override suspend fun queryPurchaseHistory(productType: ProductType): List<PurchaseHistoryRecord>? {
+  override suspend fun queryPurchaseHistory(productType: ProductType): List<PurchaseHistoryRecord> {
     val queryPurchaseHistoryParams = QueryPurchaseHistoryParams.newBuilder()
       .setProductType(productType.value)
       .build()
     val queryPurchaseHistoryTask = billingClient.queryPurchaseHistory(queryPurchaseHistoryParams)
     return if (queryPurchaseHistoryTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-      queryPurchaseHistoryTask.purchaseHistoryRecordList
+      queryPurchaseHistoryTask.purchaseHistoryRecordList ?: emptyList()
     } else {
-      null
+      throw queryPurchaseHistoryTask.billingResult.responseCode.toException()
     }
   }
 
