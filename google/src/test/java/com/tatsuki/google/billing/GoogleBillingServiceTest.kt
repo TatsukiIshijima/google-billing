@@ -1,8 +1,5 @@
-package com.tatsuki.google
+package com.tatsuki.google.billing
 
-import com.tatsuki.google.billing.ConnectionState
-import com.tatsuki.google.billing.GoogleBillingServiceException
-import com.tatsuki.google.billing.GoogleBillingServiceImpl
 import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductId
 import com.tatsuki.google.billing.model.ProductType
@@ -38,16 +35,16 @@ class GoogleBillingServiceTest {
     val connectionTask = async { googleBillingService.connect() }
     advanceUntilIdle()
 
-    assert(googleBillingService.connectionListener.connectionRequestId != null)
-    assert(googleBillingService.connectionListener.onBillingServiceConnectionListenerMap.size == 1)
+    assert(ConnectionStateListener.connectionRequestId != null)
+    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.size == 1)
 
     fakeGoogleBillingClientImpl.onBillingSetupFinished()
     val connectionState = connectionTask.await()
 
     assert(connectionState == ConnectionState.CONNECTED)
     assert(fakeGoogleBillingClientImpl.connectionCallCounter.connectCallCount == 1)
-    assert(googleBillingService.connectionListener.onBillingServiceConnectionListenerMap.isEmpty())
-    assert(googleBillingService.connectionListener.connectionRequestId == null)
+    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.isEmpty())
+    assert(ConnectionStateListener.connectionRequestId == null)
   }
 
   @Test
@@ -73,16 +70,16 @@ class GoogleBillingServiceTest {
     }
     advanceUntilIdle()
 
-    assert(googleBillingService.connectionListener.connectionRequestId != null)
-    assert(googleBillingService.connectionListener.onBillingServiceConnectionListenerMap.size == 1)
+    assert(ConnectionStateListener.connectionRequestId != null)
+    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.size == 1)
 
     fakeGoogleBillingClientImpl.onBillingSetupFinished()
     val actual = connectionTask.await().exceptionOrNull()
 
     assert(actual is GoogleBillingServiceException.ConnectFailedException)
     assert(fakeGoogleBillingClientImpl.connectionCallCounter.connectCallCount == 1)
-    assert(googleBillingService.connectionListener.onBillingServiceConnectionListenerMap.isEmpty())
-    assert(googleBillingService.connectionListener.connectionRequestId == null)
+    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.isEmpty())
+    assert(ConnectionStateListener.connectionRequestId == null)
 
   }
 

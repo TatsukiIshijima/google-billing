@@ -1,4 +1,4 @@
-package com.tatsuki.google
+package com.tatsuki.google.billing
 
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClientStateListener
@@ -11,8 +11,6 @@ import com.android.billingclient.api.PurchasesResult
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.tatsuki.google.billing.ConnectionState
-import com.tatsuki.google.billing.GoogleBillingClient
 import com.tatsuki.google.billing.pattern.ConnectionPattern
 import com.tatsuki.google.billing.pattern.QueryProductDetailsPattern
 import com.tatsuki.google.billing.pattern.QueryPurchaseHistoryPattern
