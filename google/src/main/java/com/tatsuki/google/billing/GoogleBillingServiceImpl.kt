@@ -3,7 +3,10 @@ package com.tatsuki.google.billing
 import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.QueryProductDetailsParams
 import com.tatsuki.google.billing.GoogleBillingServiceException.ConnectFailedException
+import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.RequestId
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -66,8 +69,16 @@ class GoogleBillingServiceImpl(
     }
   }
 
-  override suspend fun queryProductDetails() {
-//    TODO("Not yet implemented")
+  override suspend fun queryProductDetails(products: List<Product>): List<ProductDetails>? {
+    val queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
+      .setProductList(products.map { it.toQueryProduct() })
+      .build()
+    val queryProductDetailsTask = billingClient.queryProductDetails(queryProductDetailsParams)
+    return if (queryProductDetailsTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+      queryProductDetailsTask.productDetailsList
+    } else {
+      null
+    }
   }
 
   override suspend fun queryPurchases() {

@@ -1,9 +1,13 @@
 package com.tatsuki.google
 
 import com.tatsuki.google.FakeGoogleBillingClientImpl.ConnectionPattern
+import com.tatsuki.google.FakeGoogleBillingClientImpl.QueryProductDetailsPattern
 import com.tatsuki.google.billing.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingServiceException
 import com.tatsuki.google.billing.GoogleBillingServiceImpl
+import com.tatsuki.google.billing.model.Product
+import com.tatsuki.google.billing.model.ProductId
+import com.tatsuki.google.billing.model.ProductType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -95,5 +99,43 @@ class GoogleBillingServiceTest {
     googleBillingService.disconnect()
 
     assert(fakeGoogleBillingClientImpl.connectionCallCounter.disconnectCallCount == 0)
+  }
+
+  @Test
+  fun callQueryProductDetails_returnProductDetailsListWhenSuccess() = runTest {
+    fakeGoogleBillingClientImpl.setup(QueryProductDetailsPattern.Success())
+
+    val task = async {
+      googleBillingService.queryProductDetails(
+        products = listOf(
+          Product(
+            id = ProductId("productId"),
+            productType = ProductType.InApp()
+          )
+        )
+      )
+    }
+
+    val result = task.await()
+    assert(result != null)
+  }
+
+  @Test
+  fun callQueryProductDetails_returnNullWhenFailure() = runTest {
+    fakeGoogleBillingClientImpl.setup(QueryProductDetailsPattern.Failure())
+
+    val task = async {
+      googleBillingService.queryProductDetails(
+        products = listOf(
+          Product(
+            id = ProductId("productId"),
+            productType = ProductType.InApp()
+          )
+        )
+      )
+    }
+
+    val result = task.await()
+    assert(result == null)
   }
 }

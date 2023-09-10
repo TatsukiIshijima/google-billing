@@ -1,6 +1,8 @@
 package com.tatsuki.google.billing
 
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.ProductDetailsResult
+import com.android.billingclient.api.QueryProductDetailsParams
 
 interface GoogleBillingClient {
 
@@ -12,7 +14,7 @@ interface GoogleBillingClient {
 
   fun disconnect()
 
-  fun queryProductDetails()
+  suspend fun queryProductDetails(params: QueryProductDetailsParams): ProductDetailsResult
 
   fun queryPurchases()
 

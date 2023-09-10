@@ -3,6 +3,8 @@ package com.tatsuki.google
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetailsResult
+import com.android.billingclient.api.QueryProductDetailsParams
 import com.tatsuki.google.billing.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingClient
 
@@ -73,16 +75,46 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
     }
   }
 
-  private lateinit var pattern: ConnectionPattern
+  private lateinit var connectionPattern: ConnectionPattern
 
   fun setup(pattern: ConnectionPattern) {
-    this.pattern = pattern
+    this.connectionPattern = pattern
+  }
+
+  sealed interface QueryProductDetailsPattern {
+    val result: ProductDetailsResult
+
+    data class Success(
+      override val result: ProductDetailsResult =
+        ProductDetailsResult(
+          billingResult = BillingResult.newBuilder()
+            .setResponseCode(BillingResponseCode.OK)
+            .build(),
+          productDetailsList = listOf()
+        )
+    ) : QueryProductDetailsPattern
+
+    data class Failure(
+      override val result: ProductDetailsResult =
+        ProductDetailsResult(
+          billingResult = BillingResult.newBuilder()
+            .setResponseCode(BillingResponseCode.ERROR)
+            .build(),
+          productDetailsList = null
+        )
+    ) : QueryProductDetailsPattern
+  }
+
+  private lateinit var queryProductDetailsPattern: QueryProductDetailsPattern
+
+  fun setup(pattern: QueryProductDetailsPattern) {
+    this.queryProductDetailsPattern = pattern
   }
 
   override val isReady: Boolean
-    get() = pattern.isReady
+    get() = connectionPattern.isReady
   override val connectionState: ConnectionState
-    get() = pattern.connectionState
+    get() = connectionPattern.connectionState
 
   override fun connect(listener: BillingClientStateListener) {
     connectionCallCounter.connectCallCount++
@@ -90,8 +122,8 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
   }
 
   fun onBillingSetupFinished() {
-    if (this.pattern is ConnectionPattern.Connect) {
-      val billingResult = (this.pattern as ConnectionPattern.Connect).billingResult
+    if (this.connectionPattern is ConnectionPattern.Connect) {
+      val billingResult = (this.connectionPattern as ConnectionPattern.Connect).billingResult
       billingClientStateListener.onBillingSetupFinished(billingResult)
     }
   }
@@ -100,8 +132,8 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
     connectionCallCounter.disconnectCallCount++
   }
 
-  override fun queryProductDetails() {
-    TODO("Not yet implemented")
+  override suspend fun queryProductDetails(params: QueryProductDetailsParams): ProductDetailsResult {
+    return queryProductDetailsPattern.result
   }
 
   override fun queryPurchases() {
