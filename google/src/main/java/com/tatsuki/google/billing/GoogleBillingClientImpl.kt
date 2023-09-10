@@ -4,8 +4,11 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.ProductDetailsResponseListener
 import com.android.billingclient.api.ProductDetailsResult
+import com.android.billingclient.api.PurchaseHistoryResult
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.queryProductDetails
+import com.android.billingclient.api.queryPurchaseHistory
 import com.tatsuki.google.billing.model.Product
 
 class GoogleBillingClientImpl(
@@ -30,8 +33,8 @@ class GoogleBillingClientImpl(
     return billingClient.queryProductDetails(params)
   }
 
-  override suspend fun queryPurchaseHistory() {
-    TODO("Not yet implemented")
+  override suspend fun queryPurchaseHistory(params: QueryPurchaseHistoryParams): PurchaseHistoryResult {
+    return billingClient.queryPurchaseHistory(params)
   }
 
   override suspend fun queryPurchase() {

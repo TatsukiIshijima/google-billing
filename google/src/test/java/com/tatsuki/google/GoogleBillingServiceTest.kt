@@ -8,6 +8,7 @@ import com.tatsuki.google.billing.model.ProductId
 import com.tatsuki.google.billing.model.ProductType
 import com.tatsuki.google.billing.pattern.ConnectionPattern
 import com.tatsuki.google.billing.pattern.QueryProductDetailsPattern
+import com.tatsuki.google.billing.pattern.QueryPurchaseHistoryPattern
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -133,6 +134,30 @@ class GoogleBillingServiceTest {
           )
         )
       )
+    }
+
+    val result = task.await()
+    assert(result == null)
+  }
+
+  @Test
+  fun callQueryPurchaseHistory_returnHistoryRecordListWhenSuccess() = runTest {
+    fakeGoogleBillingClientImpl.setup(QueryPurchaseHistoryPattern.Success())
+
+    val task = async {
+      googleBillingService.queryPurchaseHistory(ProductType.Subscription())
+    }
+
+    val result = task.await()
+    assert(result != null)
+  }
+
+  @Test
+  fun callQueryPurchaseHistory_returnHistoryRecordListWhenFailure() = runTest {
+    fakeGoogleBillingClientImpl.setup(QueryPurchaseHistoryPattern.Failure())
+
+    val task = async {
+      googleBillingService.queryPurchaseHistory(ProductType.Subscription())
     }
 
     val result = task.await()

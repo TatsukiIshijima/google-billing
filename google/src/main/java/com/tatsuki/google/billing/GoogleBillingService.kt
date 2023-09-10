@@ -1,7 +1,9 @@
 package com.tatsuki.google.billing
 
 import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.PurchaseHistoryRecord
 import com.tatsuki.google.billing.model.Product
+import com.tatsuki.google.billing.model.ProductType
 
 interface GoogleBillingService {
 
@@ -11,7 +13,7 @@ interface GoogleBillingService {
 
   suspend fun queryProductDetails(products: List<Product>): List<ProductDetails>?
 
-  suspend fun queryPurchaseHistory()
+  suspend fun queryPurchaseHistory(productType: ProductType): List<PurchaseHistoryRecord>?
 
   suspend fun queryPurchase()
 

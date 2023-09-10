@@ -9,6 +9,7 @@ import com.tatsuki.google.billing.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingClient
 import com.tatsuki.google.billing.pattern.ConnectionPattern
 import com.tatsuki.google.billing.pattern.QueryProductDetailsPattern
+import com.tatsuki.google.billing.pattern.QueryPurchaseHistoryPattern
 
 class FakeGoogleBillingClientImpl : GoogleBillingClient {
 
@@ -28,13 +29,18 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
 
   private lateinit var connectionPattern: ConnectionPattern
   private lateinit var queryProductDetailsPattern: QueryProductDetailsPattern
+  private lateinit var queryPurchaseHistoryPattern: QueryPurchaseHistoryPattern
 
   fun setup(pattern: ConnectionPattern) {
-    this.connectionPattern = pattern
+    connectionPattern = pattern
   }
 
   fun setup(pattern: QueryProductDetailsPattern) {
-    this.queryProductDetailsPattern = pattern
+    queryProductDetailsPattern = pattern
+  }
+
+  fun setup(pattern: QueryPurchaseHistoryPattern) {
+    queryPurchaseHistoryPattern = pattern
   }
 
   override val isReady: Boolean
@@ -63,7 +69,7 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
   }
 
   override suspend fun queryPurchaseHistory(params: QueryPurchaseHistoryParams): PurchaseHistoryResult {
-    TODO("Not yet implemented")
+    return queryPurchaseHistoryPattern.result
   }
 
   override suspend fun queryPurchase() {
