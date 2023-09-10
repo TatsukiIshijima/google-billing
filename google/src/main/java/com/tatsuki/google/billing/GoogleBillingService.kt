@@ -18,7 +18,7 @@ interface GoogleBillingService {
 
   suspend fun queryPurchases(productType: ProductType): List<Purchase>?
 
-  suspend fun consumePurchase()
+  suspend fun consumePurchase(purchaseToken: String)
 
-  suspend fun acknowledgePurchase()
+  suspend fun acknowledgePurchase(purchaseToken: String)
 }

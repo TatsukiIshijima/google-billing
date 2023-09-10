@@ -1,6 +1,10 @@
 package com.tatsuki.google
 
+import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.ConsumeResult
 import com.android.billingclient.api.ProductDetailsResult
 import com.android.billingclient.api.PurchaseHistoryResult
 import com.android.billingclient.api.PurchasesResult
@@ -84,11 +88,11 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
     return queryPurchasesPattern.result
   }
 
-  override suspend fun consumePurchase() {
+  override suspend fun consumePurchase(params: ConsumeParams): ConsumeResult {
     TODO("Not yet implemented")
   }
 
-  override suspend fun acknowledgePurchase() {
+  override suspend fun acknowledgePurchase(params: AcknowledgePurchaseParams): BillingResult {
     TODO("Not yet implemented")
   }
 }
