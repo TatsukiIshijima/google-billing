@@ -9,6 +9,7 @@ import com.tatsuki.google.billing.model.ProductType
 import com.tatsuki.google.billing.pattern.ConnectionPattern
 import com.tatsuki.google.billing.pattern.QueryProductDetailsPattern
 import com.tatsuki.google.billing.pattern.QueryPurchaseHistoryPattern
+import com.tatsuki.google.billing.pattern.QueryPurchasesPattern
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -162,5 +163,31 @@ class GoogleBillingServiceTest {
 
     val result = task.await()
     assert(result == null)
+  }
+
+  @Test
+  fun callQueryPurchases_returnPurchaseListWhenSuccess() = runTest {
+    fakeGoogleBillingClientImpl.setup(QueryPurchasesPattern.Success())
+
+    val task = async {
+      googleBillingService.queryPurchases(ProductType.Subscription())
+    }
+
+    val result = task.await()
+    assert(result.isNotEmpty())
+  }
+
+  @Test
+  fun callQueryPurchases_returnExceptionWhenServiceUnavailable() = runTest {
+    fakeGoogleBillingClientImpl.setup(QueryPurchasesPattern.ServiceUnavailableError())
+
+    val task = async {
+      runCatching {
+        googleBillingService.queryPurchases(ProductType.Subscription())
+      }
+    }
+
+    val result = task.await().exceptionOrNull()
+    assert(result is GoogleBillingServiceException.ServiceUnavailableException)
   }
 }

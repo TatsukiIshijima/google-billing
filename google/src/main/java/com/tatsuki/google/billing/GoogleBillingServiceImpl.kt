@@ -107,8 +107,7 @@ class GoogleBillingServiceImpl(
     return if (queryPurchaseTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
       queryPurchaseTask.purchasesList
     } else {
-      // TODO:ErrorHandle
-      throw Exception("")
+      throw queryPurchaseTask.billingResult.responseCode.toException()
     }
   }
 
