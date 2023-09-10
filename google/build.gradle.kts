@@ -44,7 +44,7 @@ publishing {
     register<MavenPublication>("release") {
       groupId = "com.github.TatsukiIshijima"
       artifactId = "google-billing"
-      version = "0.0.2"
+      version = "0.0.3"
 
       afterEvaluate {
         from(components["release"])
