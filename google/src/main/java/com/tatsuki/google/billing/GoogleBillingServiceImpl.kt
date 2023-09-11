@@ -11,12 +11,10 @@ import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.tatsuki.google.billing.GoogleBillingServiceException.ConnectFailedException
 import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductType
 import com.tatsuki.google.billing.model.RequestId
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.lang.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -44,11 +42,7 @@ class GoogleBillingServiceImpl(
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
               continuation.resume(billingClient.connectionState)
             } else {
-              continuation.resumeWithException(
-                ConnectFailedException(
-                  responseCode = billingResult.responseCode
-                )
-              )
+              continuation.resumeWithException(billingResult.responseCode.toException())
             }
           }
 

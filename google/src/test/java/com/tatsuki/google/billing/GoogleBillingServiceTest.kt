@@ -62,8 +62,8 @@ class GoogleBillingServiceTest {
   }
 
   @Test
-  fun callConnect_returnExceptionWhenConnectFailed() = runTest {
-    fakeGoogleBillingClientImpl.setup(ConnectionPattern.Connect.ConnectFailed())
+  fun callConnect_returnExceptionWhenServiceUnavailable() = runTest {
+    fakeGoogleBillingClientImpl.setup(ConnectionPattern.Connect.ServiceUnavailable())
 
     val connectionTask = async {
       runCatching {
@@ -78,7 +78,7 @@ class GoogleBillingServiceTest {
     fakeGoogleBillingClientImpl.onBillingSetupFinished()
     val actual = connectionTask.await().exceptionOrNull()
 
-    assert(actual is GoogleBillingServiceException.ConnectFailedException)
+    assert(actual is GoogleBillingServiceException.ServiceUnavailableException)
     assert(fakeGoogleBillingClientImpl.connectionCallCounter.connectCallCount == 1)
     assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.isEmpty())
     assert(ConnectionStateListener.connectionRequestId == null)

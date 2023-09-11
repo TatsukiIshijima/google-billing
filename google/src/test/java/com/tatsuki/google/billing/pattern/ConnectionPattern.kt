@@ -31,7 +31,7 @@ sealed interface ConnectionPattern {
           .build(),
     ) : Connect
 
-    data class ConnectFailed(
+    data class ServiceUnavailable(
       override val isReady: Boolean = false,
       override val connectionState: ConnectionState = ConnectionState.DISCONNECTED,
       override val billingResult: BillingResult =
