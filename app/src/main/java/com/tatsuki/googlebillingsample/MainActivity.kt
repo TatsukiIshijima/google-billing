@@ -11,10 +11,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.tatsuki.googlebillingsample.ui.theme.GooglebillingTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+  @Inject
+  lateinit var billingClientLifecycle: BillingClientLifecycle
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    lifecycle.addObserver(billingClientLifecycle)
+
     setContent {
       GooglebillingTheme {
         // A surface container using the 'background' color from the theme
