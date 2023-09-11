@@ -1,12 +1,13 @@
 package com.tatsuki.google.billing
 
+import android.app.Activity
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResult
-import com.android.billingclient.api.ProductDetailsResponseListener
 import com.android.billingclient.api.ProductDetailsResult
 import com.android.billingclient.api.PurchaseHistoryResult
 import com.android.billingclient.api.PurchasesResult
@@ -18,10 +19,10 @@ import com.android.billingclient.api.consumePurchase
 import com.android.billingclient.api.queryProductDetails
 import com.android.billingclient.api.queryPurchaseHistory
 import com.android.billingclient.api.queryPurchasesAsync
-import com.tatsuki.google.billing.model.Product
+import java.lang.ref.WeakReference
 
 class GoogleBillingClientImpl(
-  private val billingClient: BillingClient
+  private val billingClient: BillingClient,
 ) : GoogleBillingClient {
 
   override val isReady: Boolean
@@ -48,6 +49,13 @@ class GoogleBillingClientImpl(
 
   override suspend fun queryPurchases(params: QueryPurchasesParams): PurchasesResult {
     return billingClient.queryPurchasesAsync(params)
+  }
+
+  override fun launchBillingFlow(
+    params: BillingFlowParams,
+    activity: Activity,
+  ): BillingResult {
+    return billingClient.launchBillingFlow(activity, params)
   }
 
   override suspend fun consumePurchase(params: ConsumeParams): ConsumeResult {

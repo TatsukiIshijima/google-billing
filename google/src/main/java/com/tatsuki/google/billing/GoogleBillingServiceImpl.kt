@@ -1,8 +1,12 @@
 package com.tatsuki.google.billing
 
+import android.app.Activity
 import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClient.BillingResponseCode
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ProductDetails
@@ -15,6 +19,7 @@ import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductType
 import com.tatsuki.google.billing.model.RequestId
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -24,6 +29,9 @@ class GoogleBillingServiceImpl(
 
   @VisibleForTesting
   val connectionListener = ConnectionStateListener
+
+  @VisibleForTesting
+  val purchasesListener = PurchasesListener
 
   override suspend fun connect(): ConnectionState {
     if (billingClient.isReady) {
@@ -104,6 +112,69 @@ class GoogleBillingServiceImpl(
       queryPurchaseTask.purchasesList
     } else {
       throw queryPurchaseTask.billingResult.responseCode.toException()
+    }
+  }
+
+  private fun launchBillingFlow(
+    productDetails: ProductDetails,
+    offerToken: String?,
+    activity: Activity,
+  ): BillingResult {
+    val productDetailsParams = if (offerToken != null) {
+      ProductDetailsParams.newBuilder()
+        .setProductDetails(productDetails)
+        .setOfferToken(offerToken)
+        .build()
+    } else {
+      ProductDetailsParams.newBuilder()
+        .setProductDetails(productDetails)
+        .build()
+    }
+    val productDetailsParamsList = listOf(productDetailsParams)
+    val billingFlowParams = BillingFlowParams.newBuilder()
+      .setProductDetailsParamsList(productDetailsParamsList)
+      .build()
+
+    return billingClient.launchBillingFlow(
+      params = billingFlowParams,
+      activity = activity
+    )
+  }
+
+  override suspend fun purchase(
+    productDetails: ProductDetails,
+    offerToken: String?,
+    activity: Activity,
+  ): List<Purchase> {
+    return suspendCancellableCoroutine { continuation ->
+      val launchBillingFlowTask = launchBillingFlow(
+        productDetails = productDetails,
+        offerToken = offerToken,
+        activity = activity
+      )
+
+      val requestId = RequestId()
+
+      if (launchBillingFlowTask.responseCode == BillingResponseCode.OK) {
+        purchasesListener.addOnPurchaseUpdatedListener(
+          requestId = requestId,
+          listener = object : OnPurchasesUpdatedListener {
+            override fun onPurchasesUpdated(
+              billingResult: BillingResult,
+              purchases: MutableList<Purchase>?,
+            ) {
+              purchasesListener.removeOnPurchaseUpdatedListener(requestId)
+              if (billingResult.responseCode == BillingResponseCode.OK) {
+                continuation.resume(purchases ?: emptyList())
+              } else {
+                continuation.resumeWithException(billingResult.responseCode.toException())
+              }
+            }
+          }
+        )
+      } else {
+        continuation.resumeWithException(launchBillingFlowTask.responseCode.toException())
+      }
     }
   }
 
