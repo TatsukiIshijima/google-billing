@@ -1,28 +1,39 @@
 package com.tatsuki.inappbilling
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import com.android.billingclient.api.ProductDetails
+import com.tatsuki.google.billing.GoogleBillingServiceException
+import com.tatsuki.inappbilling.model.ProductDetailsUiModel
+import com.tatsuki.inappbilling.ui.compose.ProductDetailsListScreen
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
+import com.tatsuki.inappbilling.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
   @Inject
   lateinit var billingClientLifecycle: BillingClientLifecycle
+
+  private val mainViewModel: MainViewModel by viewModels()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -30,6 +41,9 @@ class MainActivity : ComponentActivity() {
     lifecycle.addObserver(billingClientLifecycle)
 
     setContent {
+      val composableScope = rememberCoroutineScope()
+      val productDetails: List<ProductDetails> by mainViewModel.productDetailsList.collectAsState()
+
       InAppBillingTheme {
         Scaffold(
           topBar = {
@@ -44,42 +58,30 @@ class MainActivity : ComponentActivity() {
             )
           },
         ) { innerPadding ->
-          MainScreen(innerPadding)
+          ProductDetailsListScreen(
+            paddingValues = innerPadding,
+            productDetailsList = productDetails.map { ProductDetailsUiModel.from(it) },
+            onClick = { selectedProductDetailsIndex, selectedOfferToken ->
+              composableScope.launch {
+                try {
+                  val selectedProductDetails = productDetails[selectedProductDetailsIndex]
+                  billingClientLifecycle.purchase(
+                    productDetails = selectedProductDetails,
+                    offerToken = selectedOfferToken,
+                    activity = this@MainActivity,
+                  )
+                } catch (e: GoogleBillingServiceException) {
+                  Log.e(TAG, "$e")
+                }
+              }
+            }
+          )
         }
       }
     }
   }
-}
 
-@ExperimentalMaterial3Api
-@Composable
-private fun InAppBillingTopAppBar() {
-  TopAppBar(
-    colors = TopAppBarDefaults.smallTopAppBarColors(
-      containerColor = MaterialTheme.colorScheme.primaryContainer,
-      titleContentColor = MaterialTheme.colorScheme.primary
-    ),
-    title = {
-      Text(text = stringResource(id = R.string.app_name))
-    }
-  )
-}
-
-@Composable
-private fun MainScreen(paddingValues: PaddingValues) {
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
-@Composable
-private fun PreviewMainScreen() {
-  InAppBillingTheme {
-    Scaffold(
-      topBar = {
-        InAppBillingTopAppBar()
-      }
-    ) { innerPadding ->
-      MainScreen(paddingValues = innerPadding)
-    }
+  companion object {
+    val TAG = MainActivity::class.java.simpleName
   }
 }
