@@ -2,43 +2,46 @@ package com.tatsuki.googlebillingsample
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
-import com.tatsuki.google.billing.GoogleBillingClientImpl
+import com.tatsuki.google.billing.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingService
-import com.tatsuki.google.billing.GoogleBillingServiceImpl
+import com.tatsuki.google.billing.model.ProductType
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * https://github.com/android/play-billing-samples/blob/main/ClassyTaxiAppKotlin/app/src/main/java/com/example/billing/gpbl/BillingClientLifecycle.kt
  */
-class BillingClientLifecycle(
-  private val applicationContext: Context,
+
+@Singleton
+class BillingClientLifecycle @Inject constructor(
+  @ApplicationContext val applicationContext: Context,
+  private val googleBillingService: GoogleBillingService,
   private val coroutineScope: CoroutineScope =
     CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ) : DefaultLifecycleObserver {
 
-  private lateinit var billingService: GoogleBillingService
-
   override fun onCreate(owner: LifecycleOwner) {
-
-    val billingClient = BillingClient.newBuilder(applicationContext).build()
-    val googleBillingClientImpl = GoogleBillingClientImpl(billingClient)
-    billingService = GoogleBillingServiceImpl(googleBillingClientImpl)
-
     coroutineScope.launch {
-      billingService.connect()
+      val connectionState = googleBillingService.connect()
+      if (connectionState == ConnectionState.CONNECTED) {
+        val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
+        Log.i(TAG, "purchases=$purchases")
+      }
     }
   }
 
   override fun onDestroy(owner: LifecycleOwner) {
-    billingService.disconnect()
+    googleBillingService.disconnect()
   }
 
   suspend fun purchase(
@@ -46,16 +49,27 @@ class BillingClientLifecycle(
     offerToken: String?,
     activity: Activity,
   ): List<Purchase>? {
-    return billingService.purchase(productDetails, offerToken, activity)
+    return googleBillingService.purchase(productDetails, offerToken, activity)
   }
 
   companion object {
+
+    private val TAG = BillingClientLifecycle::class.java.simpleName
+
     @Volatile
     private var INSTANCE: BillingClientLifecycle? = null
 
-    fun getInstance(applicationContext: Context): BillingClientLifecycle =
+    fun getInstance(
+      applicationContext: Context,
+      googleBillingService: GoogleBillingService,
+    ): BillingClientLifecycle =
       INSTANCE ?: synchronized(this) {
-        INSTANCE ?: BillingClientLifecycle(applicationContext).also { INSTANCE = it }
+        INSTANCE ?: BillingClientLifecycle(
+          applicationContext,
+          googleBillingService,
+        ).also {
+          INSTANCE = it
+        }
       }
   }
 }

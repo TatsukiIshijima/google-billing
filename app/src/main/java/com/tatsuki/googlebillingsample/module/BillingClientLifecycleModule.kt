@@ -1,6 +1,7 @@
 package com.tatsuki.googlebillingsample.module
 
 import android.app.Application
+import com.tatsuki.google.billing.GoogleBillingService
 import com.tatsuki.googlebillingsample.BillingClientLifecycle
 import dagger.Module
 import dagger.Provides
@@ -15,8 +16,9 @@ object BillingClientLifecycleModule {
   @Provides
   @Singleton
   fun provideBillingLifecycle(
-    application: Application
+    application: Application,
+    googleBillingService: GoogleBillingService,
   ): BillingClientLifecycle {
-    return BillingClientLifecycle.getInstance(application)
+    return BillingClientLifecycle.getInstance(application, googleBillingService)
   }
 }
