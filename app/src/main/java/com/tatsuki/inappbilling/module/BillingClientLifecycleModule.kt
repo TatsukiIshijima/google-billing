@@ -1,8 +1,8 @@
-package com.tatsuki.googlebillingsample.module
+package com.tatsuki.inappbilling.module
 
 import android.app.Application
 import com.tatsuki.google.billing.GoogleBillingService
-import com.tatsuki.googlebillingsample.BillingClientLifecycle
+import com.tatsuki.inappbilling.BillingClientLifecycle
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

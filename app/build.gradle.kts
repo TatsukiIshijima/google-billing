@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-  namespace = "com.tatsuki.googlebillingsample"
+  namespace = "com.tatsuki.inappbilling"
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "com.tatsuki.googlebillingsample"
+    applicationId = "com.tatsuki.inappbilling"
     minSdk = 21
     targetSdk = 34
     versionCode = 1

@@ -1,7 +1,9 @@
 package com.tatsuki.google.billing
 
+import android.app.Activity
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResult
@@ -96,6 +98,10 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
 
   override suspend fun queryPurchases(params: QueryPurchasesParams): PurchasesResult {
     return queryPurchasesPattern.result
+  }
+
+  override fun launchBillingFlow(params: BillingFlowParams, activity: Activity): BillingResult {
+    TODO("Not yet implemented")
   }
 
   override suspend fun consumePurchase(params: ConsumeParams): ConsumeResult {

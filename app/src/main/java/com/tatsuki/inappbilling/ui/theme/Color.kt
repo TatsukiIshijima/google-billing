@@ -1,4 +1,4 @@
-package com.tatsuki.googlebillingsample.ui.theme
+package com.tatsuki.inappbilling.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

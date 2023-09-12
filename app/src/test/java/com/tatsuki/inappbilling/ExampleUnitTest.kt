@@ -1,4 +1,4 @@
-package com.tatsuki.googlebillingsample
+package com.tatsuki.inappbilling
 
 import org.junit.Test
 

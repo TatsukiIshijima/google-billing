@@ -1,4 +1,4 @@
-package com.tatsuki.googlebillingsample
+package com.tatsuki.inappbilling
 
 import android.app.Activity
 import android.content.Context
