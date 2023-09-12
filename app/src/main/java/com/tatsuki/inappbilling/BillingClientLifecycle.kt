@@ -74,6 +74,12 @@ class BillingClientLifecycle @Inject constructor(
     return googleBillingService.purchase(productDetails, offerToken, activity)
   }
 
+  suspend fun acknowledge(
+    purchaseToken: String
+  ) {
+    googleBillingService.acknowledgePurchase(purchaseToken)
+  }
+
   companion object {
 
     private val TAG = BillingClientLifecycle::class.java.simpleName
