@@ -22,7 +22,7 @@ interface GoogleBillingService {
 
   suspend fun purchase(
     productDetails: ProductDetails,
-    offerToken: String?,
+    offerToken: String,
     activity: Activity,
   ): List<Purchase>?
 

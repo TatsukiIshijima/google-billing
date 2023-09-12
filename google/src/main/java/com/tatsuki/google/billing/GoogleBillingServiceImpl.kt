@@ -117,19 +117,14 @@ class GoogleBillingServiceImpl(
 
   private fun launchBillingFlow(
     productDetails: ProductDetails,
-    offerToken: String?,
+    offerToken: String,
     activity: Activity,
   ): BillingResult {
-    val productDetailsParams = if (offerToken != null) {
-      ProductDetailsParams.newBuilder()
-        .setProductDetails(productDetails)
-        .setOfferToken(offerToken)
-        .build()
-    } else {
-      ProductDetailsParams.newBuilder()
-        .setProductDetails(productDetails)
-        .build()
-    }
+    val productDetailsParams = ProductDetailsParams.newBuilder()
+      .setProductDetails(productDetails)
+      .setOfferToken(offerToken)
+      .build()
+
     val productDetailsParamsList = listOf(productDetailsParams)
     val billingFlowParams = BillingFlowParams.newBuilder()
       .setProductDetailsParamsList(productDetailsParamsList)
@@ -143,7 +138,7 @@ class GoogleBillingServiceImpl(
 
   override suspend fun purchase(
     productDetails: ProductDetails,
-    offerToken: String?,
+    offerToken: String,
     activity: Activity,
   ): List<Purchase> {
     return suspendCancellableCoroutine { continuation ->
