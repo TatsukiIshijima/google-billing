@@ -9,11 +9,14 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.tatsuki.google.billing.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingService
+import com.tatsuki.google.billing.GoogleBillingServiceException
+import com.tatsuki.google.billing.model.Product
+import com.tatsuki.google.billing.model.ProductId
 import com.tatsuki.google.billing.model.ProductType
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,12 +32,32 @@ class BillingClientLifecycle @Inject constructor(
     CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ) : DefaultLifecycleObserver {
 
+  val mutableProductDetailsList = MutableStateFlow(emptyList<ProductDetails>())
+
   override fun onCreate(owner: LifecycleOwner) {
     coroutineScope.launch {
-      val connectionState = googleBillingService.connect()
-      if (connectionState == ConnectionState.CONNECTED) {
-        val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
-        Log.i(TAG, "purchases=$purchases")
+      try {
+        val connectionState = googleBillingService.connect()
+        if (connectionState == ConnectionState.CONNECTED) {
+//          val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
+//          Log.i(TAG, "purchases=$purchases")
+          val productDetailsList = googleBillingService.queryProductDetails(
+            listOf(
+              Product(
+                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_1),
+                ProductType.Subscription()
+              ),
+              Product(
+                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_2),
+                ProductType.Subscription()
+              ),
+            )
+          )
+          Log.i(TAG, "productDetailsList=$productDetailsList")
+          mutableProductDetailsList.value = productDetailsList
+        }
+      } catch (e: GoogleBillingServiceException) {
+        Log.e(TAG, "$e")
       }
     }
   }
@@ -45,7 +68,7 @@ class BillingClientLifecycle @Inject constructor(
 
   suspend fun purchase(
     productDetails: ProductDetails,
-    offerToken: String?,
+    offerToken: String,
     activity: Activity,
   ): List<Purchase>? {
     return googleBillingService.purchase(productDetails, offerToken, activity)
