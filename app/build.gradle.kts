@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
@@ -5,27 +8,52 @@ plugins {
   kotlin("kapt")
 }
 
+// If release build, please disable comment out.
+val keystorePropertiesFile = rootProject.file("local.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
 android {
   namespace = "com.tatsuki.inappbilling"
   compileSdk = 34
+
+  // If release build, please disable comment out.
+  signingConfigs {
+    create("release") {
+      keyAlias = keystoreProperties["keyAlias"] as String
+      keyPassword = keystoreProperties["keyPassword"] as String
+      storeFile = file(keystoreProperties["storeFile"] as String)
+      storePassword = keystoreProperties["storePassword"] as String
+    }
+  }
 
   defaultConfig {
     applicationId = "com.tatsuki.inappbilling"
     minSdk = 21
     targetSdk = 34
     versionCode = 1
-    versionName = "1.0"
+    versionName = "0.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
       useSupportLibrary = true
     }
+
+    setProperty("archivesBaseName", "${applicationId}-${versionName}(${versionCode})")
   }
 
   buildTypes {
+    debug {
+      isDebuggable = true
+    }
     release {
-      isMinifyEnabled = false
+      isDebuggable = false
+      isMinifyEnabled = true
+      isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+      // If release build, please disable comment out.
+      signingConfig = signingConfigs.getByName("release")
     }
   }
   compileOptions {
