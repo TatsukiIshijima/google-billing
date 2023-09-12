@@ -3,17 +3,21 @@ package com.tatsuki.inappbilling
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.tatsuki.inappbilling.ui.theme.GooglebillingTheme
+import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -26,28 +30,56 @@ class MainActivity : ComponentActivity() {
     lifecycle.addObserver(billingClientLifecycle)
 
     setContent {
-      GooglebillingTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          Greeting("Android")
+      InAppBillingTheme {
+        Scaffold(
+          topBar = {
+            TopAppBar(
+              colors = TopAppBarDefaults.smallTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.primary
+              ),
+              title = {
+                Text(text = stringResource(id = R.string.app_name))
+              }
+            )
+          },
+        ) { innerPadding ->
+          MainScreen(innerPadding)
         }
       }
     }
   }
 }
 
+@ExperimentalMaterial3Api
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-  Text(
-    text = "Hello $name!",
-    modifier = modifier
+private fun InAppBillingTopAppBar() {
+  TopAppBar(
+    colors = TopAppBarDefaults.smallTopAppBarColors(
+      containerColor = MaterialTheme.colorScheme.primaryContainer,
+      titleContentColor = MaterialTheme.colorScheme.primary
+    ),
+    title = {
+      Text(text = stringResource(id = R.string.app_name))
+    }
   )
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-  GooglebillingTheme {
-    Greeting("Android")
+private fun MainScreen(paddingValues: PaddingValues) {
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun PreviewMainScreen() {
+  InAppBillingTheme {
+    Scaffold(
+      topBar = {
+        InAppBillingTopAppBar()
+      }
+    ) { innerPadding ->
+      MainScreen(paddingValues = innerPadding)
+    }
   }
 }
