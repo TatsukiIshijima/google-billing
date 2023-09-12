@@ -24,7 +24,6 @@ import javax.inject.Singleton
 
 @Singleton
 class BillingClientLifecycle @Inject constructor(
-  @ApplicationContext val applicationContext: Context,
   private val googleBillingService: GoogleBillingService,
   private val coroutineScope: CoroutineScope =
     CoroutineScope(SupervisorJob() + Dispatchers.Default),
@@ -59,15 +58,9 @@ class BillingClientLifecycle @Inject constructor(
     @Volatile
     private var INSTANCE: BillingClientLifecycle? = null
 
-    fun getInstance(
-      applicationContext: Context,
-      googleBillingService: GoogleBillingService,
-    ): BillingClientLifecycle =
+    fun getInstance(googleBillingService: GoogleBillingService): BillingClientLifecycle =
       INSTANCE ?: synchronized(this) {
-        INSTANCE ?: BillingClientLifecycle(
-          applicationContext,
-          googleBillingService,
-        ).also {
+        INSTANCE ?: BillingClientLifecycle(googleBillingService).also {
           INSTANCE = it
         }
       }
