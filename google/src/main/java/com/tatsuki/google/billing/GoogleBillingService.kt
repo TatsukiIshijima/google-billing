@@ -6,7 +6,6 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchaseHistoryRecord
 import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductType
-import java.lang.ref.WeakReference
 
 interface GoogleBillingService {
 
@@ -20,10 +19,12 @@ interface GoogleBillingService {
 
   suspend fun queryPurchases(productType: ProductType): List<Purchase>
 
-  suspend fun purchase(
+  suspend fun purchaseSubscription(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
+    oldPurchaseToken: String?,
+    subscriptionReplacementMode: Int,
   ): List<Purchase>?
 
   suspend fun consumePurchase(purchaseToken: String)

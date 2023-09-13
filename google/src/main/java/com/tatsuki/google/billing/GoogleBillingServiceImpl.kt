@@ -119,6 +119,8 @@ class GoogleBillingServiceImpl(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
+    oldPurchaseToken: String?,
+    subscriptionReplacementMode: Int,
   ): BillingResult {
     val productDetailsParams = ProductDetailsParams.newBuilder()
       .setProductDetails(productDetails)
@@ -126,9 +128,21 @@ class GoogleBillingServiceImpl(
       .build()
 
     val productDetailsParamsList = listOf(productDetailsParams)
-    val billingFlowParams = BillingFlowParams.newBuilder()
-      .setProductDetailsParamsList(productDetailsParamsList)
-      .build()
+    val billingFlowParams = if (oldPurchaseToken.isNullOrEmpty()) {
+      BillingFlowParams.newBuilder()
+        .setProductDetailsParamsList(productDetailsParamsList)
+        .build()
+    } else {
+      BillingFlowParams.newBuilder()
+        .setProductDetailsParamsList(productDetailsParamsList)
+        .setSubscriptionUpdateParams(
+          BillingFlowParams.SubscriptionUpdateParams.newBuilder()
+            .setOldPurchaseToken(oldPurchaseToken)
+            .setSubscriptionReplacementMode(subscriptionReplacementMode)
+            .build()
+        )
+        .build()
+    }
 
     return billingClient.launchBillingFlow(
       params = billingFlowParams,
@@ -136,16 +150,20 @@ class GoogleBillingServiceImpl(
     )
   }
 
-  override suspend fun purchase(
+  override suspend fun purchaseSubscription(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
+    oldPurchaseToken: String?,
+    subscriptionReplacementMode: Int,
   ): List<Purchase> {
     return suspendCancellableCoroutine { continuation ->
       val launchBillingFlowTask = launchBillingFlow(
         productDetails = productDetails,
         offerToken = offerToken,
-        activity = activity
+        activity = activity,
+        oldPurchaseToken = oldPurchaseToken,
+        subscriptionReplacementMode = subscriptionReplacementMode,
       )
 
       val requestId = RequestId()
