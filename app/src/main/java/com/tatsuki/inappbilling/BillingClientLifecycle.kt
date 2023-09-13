@@ -1,10 +1,10 @@
 package com.tatsuki.inappbilling
 
 import android.app.Activity
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams.ReplacementMode
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.tatsuki.google.billing.ConnectionState
@@ -39,8 +39,6 @@ class BillingClientLifecycle @Inject constructor(
       try {
         val connectionState = googleBillingService.connect()
         if (connectionState == ConnectionState.CONNECTED) {
-//          val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
-//          Log.i(TAG, "purchases=$purchases")
           val productDetailsList = googleBillingService.queryProductDetails(
             listOf(
               Product(
@@ -51,6 +49,10 @@ class BillingClientLifecycle @Inject constructor(
                 ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_2),
                 ProductType.Subscription()
               ),
+              Product(
+                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_3),
+                ProductType.Subscription()
+              )
             )
           )
           Log.i(TAG, "productDetailsList=$productDetailsList")
@@ -66,16 +68,34 @@ class BillingClientLifecycle @Inject constructor(
     googleBillingService.disconnect()
   }
 
-  suspend fun purchase(
+  suspend fun purchaseSubscription(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
   ): List<Purchase>? {
-    return googleBillingService.purchase(productDetails, offerToken, activity)
+
+    Log.i(TAG, "selectedProductDetails=$productDetails")
+    val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
+    val oldPurchase = purchases
+      .find { purchase -> purchase.products.contains(productDetails.productId) }
+    Log.i(TAG, "oldPurchase=$oldPurchase")
+    val oldPurchaseToken = if (oldPurchase?.isAcknowledged == true) {
+      oldPurchase.purchaseToken
+    } else {
+      null
+    }
+
+    return googleBillingService.purchaseSubscription(
+      productDetails = productDetails,
+      offerToken = offerToken,
+      activity = activity,
+      oldPurchaseToken = oldPurchaseToken,
+      subscriptionReplacementMode = ReplacementMode.WITHOUT_PRORATION,
+    )
   }
 
   suspend fun acknowledge(
-    purchaseToken: String
+    purchaseToken: String,
   ) {
     googleBillingService.acknowledgePurchase(purchaseToken)
   }

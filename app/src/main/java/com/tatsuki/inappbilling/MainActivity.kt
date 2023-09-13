@@ -65,12 +65,14 @@ class MainActivity : ComponentActivity() {
               composableScope.launch {
                 try {
                   val selectedProductDetails = productDetails[selectedProductDetailsIndex]
-                  billingClientLifecycle.purchase(
+                  billingClientLifecycle.purchaseSubscription(
                     productDetails = selectedProductDetails,
                     offerToken = selectedOfferToken,
                     activity = this@MainActivity,
                   )?.let { purchases ->
-                    val purchase = purchases.firstOrNull { !it.isAcknowledged } ?: return@let
+                    val purchase = purchases.find { purchase ->
+                      purchase.products.contains(selectedProductDetails.productId) && !purchase.isAcknowledged
+                    } ?: return@let
                     billingClientLifecycle.acknowledge(purchase.purchaseToken)
                   }
                 } catch (e: GoogleBillingServiceException) {
