@@ -20,7 +20,6 @@ import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductType
 import com.tatsuki.google.billing.model.RequestId
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -70,6 +69,9 @@ class GoogleBillingServiceImpl(
     }
   }
 
+  // TODO:Impl retry connect
+  // https://developer.android.com/google/play/billing/errors
+
   override fun disconnect() {
     endConnectionIfReady()
   }
@@ -116,7 +118,43 @@ class GoogleBillingServiceImpl(
     }
   }
 
-  private fun launchBillingFlow(
+  private fun launchConsumableProductBillingFlow(
+    productDetails: ProductDetails,
+    activity: Activity,
+  ): BillingResult {
+    val productDetailsParams = ProductDetailsParams.newBuilder()
+      .setProductDetails(productDetails)
+      .build()
+
+    val productDetailsParamsList = listOf(productDetailsParams)
+    val billingFlowParams = BillingFlowParams.newBuilder()
+      .setProductDetailsParamsList(productDetailsParamsList)
+      .build()
+
+    return billingClient.launchBillingFlow(
+      params = billingFlowParams,
+      activity = activity
+    )
+  }
+
+  override suspend fun purchaseConsumableProduct(
+    productDetails: ProductDetails,
+    activity: Activity,
+  ): List<Purchase>? {
+    return suspendCancellableCoroutine { continuation ->
+      val launchBillingFlowTask = launchConsumableProductBillingFlow(
+        productDetails = productDetails,
+        activity = activity
+      )
+      handleLaunchBillingFlowResult(
+        billingResult = launchBillingFlowTask,
+        onSuccess = { purchases -> continuation.resume(purchases) },
+        onFailure = { e -> continuation.resumeWithException(e) }
+      )
+    }
+  }
+
+  private fun launchSubscriptionBillingFlow(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
@@ -161,36 +199,46 @@ class GoogleBillingServiceImpl(
     subscriptionReplacementMode: Int,
   ): List<Purchase> {
     return suspendCancellableCoroutine { continuation ->
-      val launchBillingFlowTask = launchBillingFlow(
+      val launchBillingFlowTask = launchSubscriptionBillingFlow(
         productDetails = productDetails,
         offerToken = offerToken,
         activity = activity,
         oldPurchaseToken = oldPurchaseToken,
         subscriptionReplacementMode = subscriptionReplacementMode,
       )
+      handleLaunchBillingFlowResult(
+        billingResult = launchBillingFlowTask,
+        onSuccess = { purchases -> continuation.resume(purchases) },
+        onFailure = { e -> continuation.resumeWithException(e) }
+      )
+    }
+  }
 
+  private fun handleLaunchBillingFlowResult(
+    billingResult: BillingResult,
+    onSuccess: (purchases: List<Purchase>) -> Unit,
+    onFailure: (e: GoogleBillingServiceException) -> Unit,
+  ) {
+    if (billingResult.responseCode == BillingResponseCode.OK) {
       val requestId = RequestId()
-
-      if (launchBillingFlowTask.responseCode == BillingResponseCode.OK) {
-        purchasesListener.addOnPurchaseUpdatedListener(
-          requestId = requestId,
-          listener = object : OnPurchasesUpdatedListener {
-            override fun onPurchasesUpdated(
-              billingResult: BillingResult,
-              purchases: MutableList<Purchase>?,
-            ) {
-              purchasesListener.removeOnPurchaseUpdatedListener(requestId)
-              if (billingResult.responseCode == BillingResponseCode.OK) {
-                continuation.resume(purchases ?: emptyList())
-              } else {
-                continuation.resumeWithException(billingResult.responseCode.toException())
-              }
+      purchasesListener.addOnPurchaseUpdatedListener(
+        requestId = requestId,
+        listener = object : OnPurchasesUpdatedListener {
+          override fun onPurchasesUpdated(
+            billingResult: BillingResult,
+            purchases: MutableList<Purchase>?,
+          ) {
+            purchasesListener.removeOnPurchaseUpdatedListener(requestId)
+            if (billingResult.responseCode == BillingResponseCode.OK) {
+              onSuccess(purchases ?: emptyList())
+            } else {
+              onFailure(billingResult.responseCode.toException())
             }
           }
-        )
-      } else {
-        continuation.resumeWithException(launchBillingFlowTask.responseCode.toException())
-      }
+        }
+      )
+    } else {
+      onFailure(billingResult.responseCode.toException())
     }
   }
 
@@ -199,7 +247,7 @@ class GoogleBillingServiceImpl(
       .setPurchaseToken(purchaseToken)
       .build()
     val consumeTask = billingClient.consumePurchase(consumeParams)
-    if (consumeTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+    if (consumeTask.billingResult.responseCode == BillingResponseCode.OK) {
       // no-op
     } else {
       throw consumeTask.billingResult.responseCode.toException()
@@ -211,7 +259,7 @@ class GoogleBillingServiceImpl(
       .setPurchaseToken(purchaseToken)
       .build()
     val acknowledgeTask = billingClient.acknowledgePurchase(acknowledgeParams)
-    if (acknowledgeTask.responseCode == BillingClient.BillingResponseCode.OK) {
+    if (acknowledgeTask.responseCode == BillingResponseCode.OK) {
       // no-op
     } else {
       throw acknowledgeTask.responseCode.toException()

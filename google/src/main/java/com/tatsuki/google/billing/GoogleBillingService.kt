@@ -19,6 +19,11 @@ interface GoogleBillingService {
 
   suspend fun queryPurchases(productType: ProductType): List<Purchase>
 
+  suspend fun purchaseConsumableProduct(
+    productDetails: ProductDetails,
+    activity: Activity,
+  ): List<Purchase>?
+
   suspend fun purchaseSubscription(
     productDetails: ProductDetails,
     offerToken: String,
