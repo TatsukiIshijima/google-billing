@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
 import com.tatsuki.google.billing.GoogleBillingServiceException
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
 import com.tatsuki.inappbilling.ui.compose.ProductDetailsListScreen
@@ -71,7 +72,9 @@ class MainActivity : ComponentActivity() {
                     activity = this@MainActivity,
                   )?.let { purchases ->
                     val purchase = purchases.find { purchase ->
-                      purchase.products.contains(selectedProductDetails.productId) && !purchase.isAcknowledged
+                      purchase.products.contains(selectedProductDetails.productId) &&
+                        purchase.purchaseState == Purchase.PurchaseState.PURCHASED &&
+                        !purchase.isAcknowledged
                     } ?: return@let
                     billingClientLifecycle.acknowledge(purchase.purchaseToken)
                   }

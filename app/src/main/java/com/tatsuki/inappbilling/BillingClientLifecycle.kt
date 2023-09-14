@@ -55,7 +55,6 @@ class BillingClientLifecycle @Inject constructor(
               )
             )
           )
-          Log.i(TAG, "productDetailsList=$productDetailsList")
           mutableProductDetailsList.value = productDetailsList
         }
       } catch (e: GoogleBillingServiceException) {
@@ -79,7 +78,7 @@ class BillingClientLifecycle @Inject constructor(
     val oldPurchase = purchases
       .find { purchase -> purchase.products.contains(productDetails.productId) }
     Log.i(TAG, "oldPurchase=$oldPurchase")
-    val oldPurchaseToken = if (oldPurchase?.isAcknowledged == true) {
+    val oldPurchaseToken = if (oldPurchase?.purchaseState == Purchase.PurchaseState.PURCHASED) {
       oldPurchase.purchaseToken
     } else {
       null
@@ -90,7 +89,7 @@ class BillingClientLifecycle @Inject constructor(
       offerToken = offerToken,
       activity = activity,
       oldPurchaseToken = oldPurchaseToken,
-      subscriptionReplacementMode = ReplacementMode.WITHOUT_PRORATION,
+      subscriptionReplacementMode = ReplacementMode.CHARGE_FULL_PRICE,
     )
   }
 
