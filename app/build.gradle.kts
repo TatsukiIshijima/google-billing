@@ -9,23 +9,23 @@ plugins {
 }
 
 // If release build, please disable comment out.
-val keystorePropertiesFile = rootProject.file("local.properties")
-val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+//val keystorePropertiesFile = rootProject.file("local.properties")
+//val keystoreProperties = Properties()
+//keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
   namespace = "com.tatsuki.inappbilling"
   compileSdk = 34
 
   // If release build, please disable comment out.
-  signingConfigs {
-    create("release") {
-      keyAlias = keystoreProperties["keyAlias"] as String
-      keyPassword = keystoreProperties["keyPassword"] as String
-      storeFile = file(keystoreProperties["storeFile"] as String)
-      storePassword = keystoreProperties["storePassword"] as String
-    }
-  }
+//  signingConfigs {
+//    create("release") {
+//      keyAlias = keystoreProperties["keyAlias"] as String
+//      keyPassword = keystoreProperties["keyPassword"] as String
+//      storeFile = file(keystoreProperties["storeFile"] as String)
+//      storePassword = keystoreProperties["storePassword"] as String
+//    }
+//  }
 
   defaultConfig {
     applicationId = "com.tatsuki.inappbilling"
@@ -53,7 +53,7 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
       // If release build, please disable comment out.
-      signingConfig = signingConfigs.getByName("release")
+//      signingConfig = signingConfigs.getByName("release")
     }
   }
   compileOptions {
