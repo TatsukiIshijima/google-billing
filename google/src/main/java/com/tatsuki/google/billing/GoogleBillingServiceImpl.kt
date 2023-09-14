@@ -1,6 +1,7 @@
 package com.tatsuki.google.billing
 
 import android.app.Activity
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -129,10 +130,12 @@ class GoogleBillingServiceImpl(
 
     val productDetailsParamsList = listOf(productDetailsParams)
     val billingFlowParams = if (oldPurchaseToken.isNullOrEmpty()) {
+      Log.d("GoogleBillingService", "Launch new subscription billing flow.")
       BillingFlowParams.newBuilder()
         .setProductDetailsParamsList(productDetailsParamsList)
         .build()
     } else {
+      Log.d("GoogleBillingService", "Launch update subscription billing flow.")
       BillingFlowParams.newBuilder()
         .setProductDetailsParamsList(productDetailsParamsList)
         .setSubscriptionUpdateParams(
