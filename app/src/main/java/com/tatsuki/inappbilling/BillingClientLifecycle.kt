@@ -52,6 +52,14 @@ class BillingClientLifecycle @Inject constructor(
               Product(
                 ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_3),
                 ProductType.Subscription()
+              ),
+              Product(
+                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_4),
+                ProductType.Subscription()
+              ),
+              Product(
+                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_5),
+                ProductType.Subscription()
               )
             )
           )
@@ -75,8 +83,12 @@ class BillingClientLifecycle @Inject constructor(
 
     Log.i(TAG, "selectedProductDetails=$productDetails")
     val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
+
+    // Upgrade or downgrade when purchase another subscription while subscribing to a subscription.
     val oldPurchase = purchases
-      .find { purchase -> purchase.products.contains(productDetails.productId) }
+      .find { purchase ->
+        !purchase.products.contains(productDetails.productId)
+      }
     Log.i(TAG, "oldPurchase=$oldPurchase")
     val oldPurchaseToken = if (oldPurchase?.purchaseState == Purchase.PurchaseState.PURCHASED) {
       oldPurchase.purchaseToken
@@ -89,7 +101,6 @@ class BillingClientLifecycle @Inject constructor(
       offerToken = offerToken,
       activity = activity,
       oldPurchaseToken = oldPurchaseToken,
-      subscriptionReplacementMode = ReplacementMode.CHARGE_FULL_PRICE,
     )
   }
 

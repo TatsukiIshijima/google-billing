@@ -8,6 +8,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
+import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ProductDetails
@@ -158,6 +159,8 @@ class GoogleBillingServiceImpl(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
+    obfuscatedAccountId: String?,
+    obfuscatedProfileId: String?,
     oldPurchaseToken: String?,
     subscriptionReplacementMode: Int,
   ): BillingResult {
@@ -167,26 +170,32 @@ class GoogleBillingServiceImpl(
       .build()
 
     val productDetailsParamsList = listOf(productDetailsParams)
-    val billingFlowParams = if (oldPurchaseToken.isNullOrEmpty()) {
-      Log.d("GoogleBillingService", "Launch new subscription billing flow.")
-      BillingFlowParams.newBuilder()
-        .setProductDetailsParamsList(productDetailsParamsList)
+
+    val billingFlowParams = BillingFlowParams.newBuilder()
+      .setProductDetailsParamsList(productDetailsParamsList)
+
+    if (obfuscatedAccountId?.isNotEmpty() == true) {
+      billingFlowParams.setObfuscatedAccountId(obfuscatedAccountId)
+    }
+    if (obfuscatedProfileId?.isNotEmpty() == true) {
+      billingFlowParams.setObfuscatedProfileId(obfuscatedProfileId)
+    }
+    val subscriptionUpdateParams = if (oldPurchaseToken?.isNotEmpty() == true) {
+      SubscriptionUpdateParams.newBuilder()
+        .setOldPurchaseToken(oldPurchaseToken)
+        .setSubscriptionReplacementMode(subscriptionReplacementMode)
         .build()
     } else {
-      Log.d("GoogleBillingService", "Launch update subscription billing flow.")
-      BillingFlowParams.newBuilder()
-        .setProductDetailsParamsList(productDetailsParamsList)
-        .setSubscriptionUpdateParams(
-          BillingFlowParams.SubscriptionUpdateParams.newBuilder()
-            .setOldPurchaseToken(oldPurchaseToken)
-            .setSubscriptionReplacementMode(subscriptionReplacementMode)
-            .build()
-        )
-        .build()
+      null
     }
-
+    if (subscriptionUpdateParams != null) {
+      Log.d("GoogleBillingService", "Launch update subscription billing flow. replaceMode=$subscriptionReplacementMode")
+      billingFlowParams.setSubscriptionUpdateParams(subscriptionUpdateParams)
+    } else {
+      Log.d("GoogleBillingService", "Launch new subscription billing flow.")
+    }
     return billingClient.launchBillingFlow(
-      params = billingFlowParams,
+      params = billingFlowParams.build(),
       activity = activity
     )
   }
@@ -195,6 +204,8 @@ class GoogleBillingServiceImpl(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
+    obfuscatedAccountId: String?,
+    obfuscatedProfileId: String?,
     oldPurchaseToken: String?,
     subscriptionReplacementMode: Int,
   ): List<Purchase> {
@@ -203,6 +214,8 @@ class GoogleBillingServiceImpl(
         productDetails = productDetails,
         offerToken = offerToken,
         activity = activity,
+        obfuscatedAccountId = obfuscatedAccountId,
+        obfuscatedProfileId = obfuscatedProfileId,
         oldPurchaseToken = oldPurchaseToken,
         subscriptionReplacementMode = subscriptionReplacementMode,
       )
