@@ -65,4 +65,8 @@ class GoogleBillingClientImpl(
   override suspend fun acknowledgePurchase(params: AcknowledgePurchaseParams): BillingResult {
     return billingClient.acknowledgePurchase(params)
   }
+
+  override fun isFeatureSupport(featureType: BillingFeatureType): BillingResult {
+    return billingClient.isFeatureSupported(featureType.value)
+  }
 }

@@ -2,6 +2,7 @@ package com.tatsuki.google.billing
 
 import android.app.Activity
 import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
@@ -110,5 +111,9 @@ class FakeGoogleBillingClientImpl : GoogleBillingClient {
 
   override suspend fun acknowledgePurchase(params: AcknowledgePurchaseParams): BillingResult {
     return acknowledgePattern.result
+  }
+
+  override fun isFeatureSupport(featureType: BillingFeatureType): BillingResult {
+    TODO("Not yet implemented")
   }
 }

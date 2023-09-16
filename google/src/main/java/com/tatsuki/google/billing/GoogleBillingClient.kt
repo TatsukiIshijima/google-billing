@@ -39,4 +39,6 @@ interface GoogleBillingClient {
   suspend fun consumePurchase(params: ConsumeParams): ConsumeResult
 
   suspend fun acknowledgePurchase(params: AcknowledgePurchaseParams): BillingResult
+
+  fun isFeatureSupport(featureType: BillingFeatureType): BillingResult
 }
