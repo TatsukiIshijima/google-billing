@@ -4,10 +4,9 @@ import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams.ReplacementMode
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
-import com.tatsuki.google.billing.ConnectionState
+import com.tatsuki.google.billing.model.type.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingService
 import com.tatsuki.google.billing.GoogleBillingServiceException
 import com.tatsuki.google.billing.model.Product

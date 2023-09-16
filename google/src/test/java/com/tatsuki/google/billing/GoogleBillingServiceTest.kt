@@ -4,6 +4,7 @@ import com.tatsuki.google.billing.listener.ConnectionStateListener
 import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductId
 import com.tatsuki.google.billing.model.ProductType
+import com.tatsuki.google.billing.model.type.ConnectionState
 import com.tatsuki.google.billing.pattern.AcknowledgePattern
 import com.tatsuki.google.billing.pattern.ConnectionPattern
 import com.tatsuki.google.billing.pattern.ConsumePattern

@@ -7,6 +7,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchaseHistoryRecord
 import com.tatsuki.google.billing.model.Product
 import com.tatsuki.google.billing.model.ProductType
+import com.tatsuki.google.billing.model.type.ConnectionState
 
 interface GoogleBillingService {
 

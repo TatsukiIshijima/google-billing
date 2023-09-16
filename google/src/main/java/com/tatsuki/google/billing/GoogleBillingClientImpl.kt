@@ -19,7 +19,8 @@ import com.android.billingclient.api.consumePurchase
 import com.android.billingclient.api.queryProductDetails
 import com.android.billingclient.api.queryPurchaseHistory
 import com.android.billingclient.api.queryPurchasesAsync
-import java.lang.ref.WeakReference
+import com.tatsuki.google.billing.model.type.BillingFeatureType
+import com.tatsuki.google.billing.model.type.ConnectionState
 
 class GoogleBillingClientImpl(
   private val billingClient: BillingClient,

@@ -13,7 +13,8 @@ import com.android.billingclient.api.PurchasesResult
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
-import java.lang.ref.WeakReference
+import com.tatsuki.google.billing.model.type.BillingFeatureType
+import com.tatsuki.google.billing.model.type.ConnectionState
 
 interface GoogleBillingClient {
 
