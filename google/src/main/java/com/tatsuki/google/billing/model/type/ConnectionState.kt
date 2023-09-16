@@ -1,5 +1,6 @@
 package com.tatsuki.google.billing.model.type
 
+import com.android.billingclient.api.BillingClient
 import java.lang.IllegalStateException
 
 enum class ConnectionState {
@@ -12,10 +13,10 @@ enum class ConnectionState {
   companion object {
     fun from(connectionState: Int): ConnectionState {
       return when (connectionState) {
-        0 -> DISCONNECTED
-        1 -> CONNECTING
-        2 -> CONNECTED
-        3 -> CLOSED
+        BillingClient.ConnectionState.DISCONNECTED -> DISCONNECTED
+        BillingClient.ConnectionState.CONNECTING -> CONNECTING
+        BillingClient.ConnectionState.CONNECTED -> CONNECTED
+        BillingClient.ConnectionState.CLOSED -> CLOSED
         else -> throw IllegalStateException("Unknown connection state: $connectionState")
       }
     }
