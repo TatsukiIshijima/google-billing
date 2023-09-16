@@ -20,19 +20,21 @@ import java.lang.Exception
 @OptIn(ExperimentalCoroutinesApi::class)
 class GoogleBillingServiceTest {
 
-  private lateinit var fakeGoogleBillingClientImpl: FakeGoogleBillingClientImpl
+  private lateinit var fakeGoogleBillingClient: FakeGoogleBillingClientImpl
   private lateinit var googleBillingService: GoogleBillingServiceImpl
 
   @Before
   fun setup() {
-    fakeGoogleBillingClientImpl = FakeGoogleBillingClientImpl()
-    fakeGoogleBillingClientImpl.connectionCallCounter.reset()
-    googleBillingService = GoogleBillingServiceImpl(fakeGoogleBillingClientImpl)
+    val googleBillingClientFactory = FakeGoogleBillingClientFactoryImpl()
+    googleBillingService = GoogleBillingServiceImpl(googleBillingClientFactory)
+
+    fakeGoogleBillingClient = googleBillingClientFactory.fakeGoogleBillingClient
+    fakeGoogleBillingClient.connectionCallCounter.reset()
   }
 
   @Test
   fun callConnect_returnConnectedWhenNotConnectedYet() = runTest {
-    fakeGoogleBillingClientImpl.setup(ConnectionPattern.Connect.NotConnectedYet())
+    fakeGoogleBillingClient.setup(ConnectionPattern.Connect.NotConnectedYet())
 
     val connectionTask = async { googleBillingService.connect() }
     advanceUntilIdle()
@@ -40,30 +42,30 @@ class GoogleBillingServiceTest {
     assert(ConnectionStateListener.connectionRequestId != null)
     assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.size == 1)
 
-    fakeGoogleBillingClientImpl.onBillingSetupFinished()
+    fakeGoogleBillingClient.onBillingSetupFinished()
     val connectionState = connectionTask.await()
 
     assert(connectionState == ConnectionState.CONNECTED)
-    assert(fakeGoogleBillingClientImpl.connectionCallCounter.connectCallCount == 1)
+    assert(fakeGoogleBillingClient.connectionCallCounter.connectCallCount == 1)
     assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.isEmpty())
     assert(ConnectionStateListener.connectionRequestId == null)
   }
 
   @Test
   fun callConnect_returnConnectedWhenAlreadyConnected() = runTest {
-    fakeGoogleBillingClientImpl.setup(ConnectionPattern.Connect.AlreadyConnected())
+    fakeGoogleBillingClient.setup(ConnectionPattern.Connect.AlreadyConnected())
 
     val connectionState = googleBillingService.connect()
 
     advanceUntilIdle()
 
     assert(connectionState == ConnectionState.CONNECTED)
-    assert(fakeGoogleBillingClientImpl.connectionCallCounter.connectCallCount == 0)
+    assert(fakeGoogleBillingClient.connectionCallCounter.connectCallCount == 0)
   }
 
   @Test
   fun callConnect_returnExceptionWhenServiceUnavailable() = runTest {
-    fakeGoogleBillingClientImpl.setup(ConnectionPattern.Connect.ServiceUnavailable())
+    fakeGoogleBillingClient.setup(ConnectionPattern.Connect.ServiceUnavailable())
 
     val connectionTask = async {
       runCatching {
@@ -75,11 +77,11 @@ class GoogleBillingServiceTest {
     assert(ConnectionStateListener.connectionRequestId != null)
     assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.size == 1)
 
-    fakeGoogleBillingClientImpl.onBillingSetupFinished()
+    fakeGoogleBillingClient.onBillingSetupFinished()
     val actual = connectionTask.await().exceptionOrNull()
 
     assert(actual is GoogleBillingServiceException.ServiceUnavailableException)
-    assert(fakeGoogleBillingClientImpl.connectionCallCounter.connectCallCount == 1)
+    assert(fakeGoogleBillingClient.connectionCallCounter.connectCallCount == 1)
     assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.isEmpty())
     assert(ConnectionStateListener.connectionRequestId == null)
 
@@ -87,25 +89,25 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callDisconnect_returnDisconnectedWhenNotDisconnectedYet() {
-    fakeGoogleBillingClientImpl.setup(ConnectionPattern.Disconnect.NotDisConnectedYet())
+    fakeGoogleBillingClient.setup(ConnectionPattern.Disconnect.NotDisConnectedYet())
 
     googleBillingService.disconnect()
 
-    assert(fakeGoogleBillingClientImpl.connectionCallCounter.disconnectCallCount == 1)
+    assert(fakeGoogleBillingClient.connectionCallCounter.disconnectCallCount == 1)
   }
 
   @Test
   fun callDisconnect_returnDisconnectedWhenAlreadyDisconnected() {
-    fakeGoogleBillingClientImpl.setup(ConnectionPattern.Disconnect.AlreadyDisconnected())
+    fakeGoogleBillingClient.setup(ConnectionPattern.Disconnect.AlreadyDisconnected())
 
     googleBillingService.disconnect()
 
-    assert(fakeGoogleBillingClientImpl.connectionCallCounter.disconnectCallCount == 0)
+    assert(fakeGoogleBillingClient.connectionCallCounter.disconnectCallCount == 0)
   }
 
   @Test
   fun callQueryProductDetails_returnProductDetailsListWhenSuccess() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryProductDetailsPattern.Success())
+    fakeGoogleBillingClient.setup(QueryProductDetailsPattern.Success())
 
     val task = async {
       googleBillingService.queryProductDetails(
@@ -124,7 +126,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callQueryProductDetails_returnExceptionWhenError() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryProductDetailsPattern.Error())
+    fakeGoogleBillingClient.setup(QueryProductDetailsPattern.Error())
 
     val task = async {
       runCatching {
@@ -145,7 +147,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callQueryPurchaseHistory_returnHistoryRecordListWhenSuccess() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryPurchaseHistoryPattern.Success())
+    fakeGoogleBillingClient.setup(QueryPurchaseHistoryPattern.Success())
 
     val task = async {
       googleBillingService.queryPurchaseHistory(ProductType.Subscription())
@@ -157,7 +159,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callQueryPurchaseHistory_returnHistoryRecordListWhenFailure() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryPurchaseHistoryPattern.Error())
+    fakeGoogleBillingClient.setup(QueryPurchaseHistoryPattern.Error())
 
     val task = async {
       runCatching {
@@ -171,7 +173,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callQueryPurchases_returnPurchaseListWhenSuccess() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryPurchasesPattern.Success())
+    fakeGoogleBillingClient.setup(QueryPurchasesPattern.Success())
 
     val task = async {
       googleBillingService.queryPurchases(ProductType.Subscription())
@@ -183,7 +185,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callQueryPurchases_returnExceptionWhenServiceUnavailable() = runTest {
-    fakeGoogleBillingClientImpl.setup(QueryPurchasesPattern.ServiceUnavailableError())
+    fakeGoogleBillingClient.setup(QueryPurchasesPattern.ServiceUnavailableError())
 
     val task = async {
       runCatching {
@@ -197,7 +199,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callConsume_noExceptionWhenSuccess() = runTest {
-    fakeGoogleBillingClientImpl.setup(ConsumePattern.Success())
+    fakeGoogleBillingClient.setup(ConsumePattern.Success())
 
     val task = async {
       runCatching {
@@ -211,7 +213,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callConsume_exceptionWhenError() = runTest {
-    fakeGoogleBillingClientImpl.setup(ConsumePattern.Error())
+    fakeGoogleBillingClient.setup(ConsumePattern.Error())
 
     val task = async {
       runCatching {
@@ -225,7 +227,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callAcknowledge_noExceptionWhenSuccess() = runTest {
-    fakeGoogleBillingClientImpl.setup(AcknowledgePattern.Success())
+    fakeGoogleBillingClient.setup(AcknowledgePattern.Success())
 
     val task = async {
       runCatching {
@@ -239,7 +241,7 @@ class GoogleBillingServiceTest {
 
   @Test
   fun callAcknowledge_exceptionWhenError() = runTest {
-    fakeGoogleBillingClientImpl.setup(AcknowledgePattern.Error())
+    fakeGoogleBillingClient.setup(AcknowledgePattern.Error())
 
     val task = async {
       runCatching {

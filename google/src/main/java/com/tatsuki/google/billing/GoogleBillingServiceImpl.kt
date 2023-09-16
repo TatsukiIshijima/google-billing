@@ -25,8 +25,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class GoogleBillingServiceImpl(
-  private val billingClient: GoogleBillingClient,
+  googleBillingFactory: GoogleBillingClientFactory,
 ) : GoogleBillingService {
+
+  private val billingClient = googleBillingFactory.create()
 
   @VisibleForTesting
   val connectionListener = ConnectionStateListener
