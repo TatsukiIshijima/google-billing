@@ -6,7 +6,7 @@ import com.tatsuki.google.billing.GoogleBillingClientFactory
 import com.tatsuki.google.billing.GoogleBillingClientFactoryImpl
 import com.tatsuki.google.billing.GoogleBillingService
 import com.tatsuki.google.billing.GoogleBillingServiceImpl
-import com.tatsuki.google.billing.PurchasesListener
+import com.tatsuki.google.billing.listener.PurchasesListener
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
