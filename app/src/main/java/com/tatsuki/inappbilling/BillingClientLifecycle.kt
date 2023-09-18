@@ -59,34 +59,41 @@ class BillingClientLifecycle @Inject constructor(
     offerToken: String,
     activity: Activity,
   ): List<Purchase>? {
+    return try {
+      val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
 
-    Log.d(TAG, "selectedProductDetails=$productDetails")
-    val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
-
-    // Upgrade or downgrade when purchase another subscription while subscribing to a subscription.
-    val oldPurchase = purchases
-      .find { purchase ->
-        !purchase.products.contains(productDetails.productId)
+      // Upgrade or downgrade when purchase another subscription while subscribing to a subscription.
+      val oldPurchase = purchases
+        .find { purchase ->
+          !purchase.products.contains(productDetails.productId)
+        }
+      Log.d(TAG, "oldPurchase=$oldPurchase")
+      val oldPurchaseToken = if (oldPurchase?.purchaseState == Purchase.PurchaseState.PURCHASED) {
+        oldPurchase.purchaseToken
+      } else {
+        null
       }
-    Log.d(TAG, "oldPurchase=$oldPurchase")
-    val oldPurchaseToken = if (oldPurchase?.purchaseState == Purchase.PurchaseState.PURCHASED) {
-      oldPurchase.purchaseToken
-    } else {
+
+      googleBillingService.purchaseSubscription(
+        productDetails = productDetails,
+        offerToken = offerToken,
+        activity = activity,
+        oldPurchaseToken = oldPurchaseToken,
+      )
+    } catch (e: GoogleBillingServiceException) {
+      Log.e(TAG, "$e")
       null
     }
-
-    return googleBillingService.purchaseSubscription(
-      productDetails = productDetails,
-      offerToken = offerToken,
-      activity = activity,
-      oldPurchaseToken = oldPurchaseToken,
-    )
   }
 
   suspend fun acknowledge(
     purchaseToken: String,
   ) {
-    googleBillingService.acknowledgePurchase(purchaseToken)
+    try {
+      googleBillingService.acknowledgePurchase(purchaseToken)
+    } catch (e: GoogleBillingServiceException) {
+      Log.e(TAG, "$e")
+    }
   }
 
   suspend fun purchaseConsumeProduct(
@@ -94,7 +101,6 @@ class BillingClientLifecycle @Inject constructor(
     activity: Activity,
   ): List<Purchase>? {
     return try {
-      Log.d(TAG, "selectedProductDetails=$productDetails")
       googleBillingService.purchaseConsumableProduct(
         productDetails = productDetails,
         activity = activity,
@@ -108,7 +114,11 @@ class BillingClientLifecycle @Inject constructor(
   suspend fun consume(
     purchaseToken: String
   ) {
-    googleBillingService.consumePurchase(purchaseToken)
+    try {
+      googleBillingService.consumePurchase(purchaseToken)
+    } catch (e: GoogleBillingServiceException) {
+      Log.e(TAG, "$e")
+    }
   }
 
   companion object {

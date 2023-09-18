@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
-import com.tatsuki.google.billing.GoogleBillingServiceException
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
 import com.tatsuki.inappbilling.ui.compose.home.HomeScreen
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
@@ -56,29 +55,27 @@ class MainActivity : ComponentActivity() {
           },
           onSubscriptionClick = { selectedProductDetailsIndex, selectedOfferToken ->
             composableScope.launch {
-              try {
-                val selectedProductDetails =
-                  productDetailsWithSubscriptionList[selectedProductDetailsIndex]
-                billingClientLifecycle.purchaseSubscription(
-                  productDetails = selectedProductDetails,
-                  offerToken = selectedOfferToken,
-                  activity = this@MainActivity,
-                )?.let { purchases ->
-                  val purchase = purchases.find { purchase ->
-                    purchase.products.contains(selectedProductDetails.productId) &&
-                            purchase.purchaseState == Purchase.PurchaseState.PURCHASED &&
-                            !purchase.isAcknowledged
-                  } ?: return@let
-                  billingClientLifecycle.acknowledge(purchase.purchaseToken)
-                }
-              } catch (e: GoogleBillingServiceException) {
-                Log.e(TAG, "$e")
+              val selectedProductDetails =
+                productDetailsWithSubscriptionList[selectedProductDetailsIndex]
+              Log.d(TAG, "selectedProductDetails=$selectedProductDetails")
+              billingClientLifecycle.purchaseSubscription(
+                productDetails = selectedProductDetails,
+                offerToken = selectedOfferToken,
+                activity = this@MainActivity,
+              )?.let { purchases ->
+                val purchase = purchases.find { purchase ->
+                  purchase.products.contains(selectedProductDetails.productId) &&
+                          purchase.purchaseState == Purchase.PurchaseState.PURCHASED &&
+                          !purchase.isAcknowledged
+                } ?: return@let
+                billingClientLifecycle.acknowledge(purchase.purchaseToken)
               }
             }
           },
           onInAppItemClick = { uiModel ->
             composableScope.launch {
               val selectedProductDetails = productDetailsWithInAppItemList[uiModel.index]
+              Log.d(TAG, "selectedProductDetails=$selectedProductDetails")
               billingClientLifecycle.purchaseConsumeProduct(
                 productDetails = selectedProductDetails,
                 activity = this@MainActivity
