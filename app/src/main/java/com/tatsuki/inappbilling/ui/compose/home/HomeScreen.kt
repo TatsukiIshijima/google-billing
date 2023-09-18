@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.tatsuki.inappbilling.R
+import com.tatsuki.inappbilling.model.OneTimePurchaseOfferDetailUiModel
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
 import com.tatsuki.inappbilling.ui.compose.inappitem.InAppItemScreen
 import com.tatsuki.inappbilling.ui.compose.subscription.SubscriptionScreen
@@ -40,9 +41,10 @@ enum class InAppBillingPage(
 @Composable
 fun HomeScreen(
   modifier: Modifier = Modifier,
-  productDetailsList: List<ProductDetailsUiModel>,
+  productDetailsWithSubscriptionList: List<ProductDetailsUiModel>,
+  productDetailsWithInAppItemList: List<ProductDetailsUiModel>,
   onSubscriptionClick: (index: Int, offerToken: String) -> Unit = { _, _ -> },
-  onInAppItemClick: (index: Int) -> Unit = { _ -> },
+  onInAppItemClick: (uiModel: OneTimePurchaseOfferDetailUiModel) -> Unit = { _ -> },
 ) {
   var selectedTabIndex by remember { mutableStateOf(0) }
   Scaffold(
@@ -62,11 +64,14 @@ fun HomeScreen(
           InAppBillingPage.IN_APP_ITEM -> 1
         }
       },
-      productDetailsList = productDetailsList,
+      productDetailsWithSubscriptionList = productDetailsWithSubscriptionList,
+      productDetailsWithInAppItemList = productDetailsWithInAppItemList,
       onSubscriptionClick = { index, offerToken ->
         onSubscriptionClick(index, offerToken)
       },
-      onInAppItemClick = {},
+      onInAppItemClick = { uiModel ->
+        onInAppItemClick(uiModel)
+      },
     )
   }
 }
@@ -76,7 +81,16 @@ fun HomeScreen(
 private fun PreviewHomeScreen() {
   InAppBillingTheme {
     HomeScreen(
-      productDetailsList = (0..1).map { ProductDetailsUiModel.fake() },
+      productDetailsWithSubscriptionList = (0..1).mapIndexed { index, productDetails ->
+        ProductDetailsUiModel.fake(
+          index = index,
+        )
+      },
+      productDetailsWithInAppItemList = (0..1).mapIndexed { index, productDetails ->
+        ProductDetailsUiModel.fake(
+          index = index,
+        )
+      },
       onSubscriptionClick = { index, offerToken -> },
       onInAppItemClick = {},
     )
@@ -89,9 +103,10 @@ private fun HomeTabScreen(
   selectedTabIndex: Int,
   onTabClick: (InAppBillingPage) -> Unit,
   tabs: Array<InAppBillingPage> = InAppBillingPage.values(),
-  productDetailsList: List<ProductDetailsUiModel>,
+  productDetailsWithSubscriptionList: List<ProductDetailsUiModel>,
+  productDetailsWithInAppItemList: List<ProductDetailsUiModel>,
   onSubscriptionClick: (index: Int, offerToken: String) -> Unit = { _, _ -> },
-  onInAppItemClick: (index: Int) -> Unit = { _ -> },
+  onInAppItemClick: (uiModel: OneTimePurchaseOfferDetailUiModel) -> Unit = { _ -> },
 ) {
   Column(modifier) {
     TabRow(
@@ -108,13 +123,18 @@ private fun HomeTabScreen(
     }
     when (InAppBillingPage.from(selectedTabIndex)) {
       InAppBillingPage.SUBSCRIPTION -> SubscriptionScreen(
-        productDetailsList = productDetailsList,
+        productDetailsList = productDetailsWithSubscriptionList,
         onClick = { index, offerToken ->
           onSubscriptionClick(index, offerToken)
         }
       )
 
-      InAppBillingPage.IN_APP_ITEM -> InAppItemScreen()
+      InAppBillingPage.IN_APP_ITEM -> InAppItemScreen(
+        productDetailsList = productDetailsWithInAppItemList,
+        onClick = { uiModel ->
+          onInAppItemClick(uiModel)
+        }
+      )
     }
   }
 }
@@ -124,7 +144,8 @@ private fun HomeTabScreen(
 private fun PreviewHomeTabScreen() {
   InAppBillingTheme {
     HomeTabScreen(
-      productDetailsList = emptyList(),
+      productDetailsWithSubscriptionList = emptyList(),
+      productDetailsWithInAppItemList = emptyList(),
       selectedTabIndex = 0,
       onTabClick = {}
     )

@@ -37,15 +37,28 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       val composableScope = rememberCoroutineScope()
-      val productDetails: List<ProductDetails> by mainViewModel.productDetailsList.collectAsState()
+      val productDetailsWithSubscriptionList: List<ProductDetails> by mainViewModel.productDetailsWithSubscriptionList.collectAsState()
+      val productDetailsWithInAppItemList: List<ProductDetails> by mainViewModel.productDetailsWithInAppItemList.collectAsState()
 
       InAppBillingTheme {
         HomeScreen(
-          productDetailsList = productDetails.map { ProductDetailsUiModel.from(it) },
+          productDetailsWithSubscriptionList = productDetailsWithSubscriptionList.mapIndexed { index, productDetails ->
+            ProductDetailsUiModel.from(
+              index = index,
+              productDetails = productDetails
+            )
+          },
+          productDetailsWithInAppItemList = productDetailsWithInAppItemList.mapIndexed { index, productDetails ->
+            ProductDetailsUiModel.from(
+              index = index,
+              productDetails = productDetails,
+            )
+          },
           onSubscriptionClick = { selectedProductDetailsIndex, selectedOfferToken ->
             composableScope.launch {
               try {
-                val selectedProductDetails = productDetails[selectedProductDetailsIndex]
+                val selectedProductDetails =
+                  productDetailsWithSubscriptionList[selectedProductDetailsIndex]
                 billingClientLifecycle.purchaseSubscription(
                   productDetails = selectedProductDetails,
                   offerToken = selectedOfferToken,
@@ -63,7 +76,9 @@ class MainActivity : ComponentActivity() {
               }
             }
           },
-          onInAppItemClick = { /*TODO*/ },
+          onInAppItemClick = { uiModel ->
+
+          },
         )
       }
     }
