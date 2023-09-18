@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">InAppBillingApp</string>
+  <string name="subscription_title">Subscription</string>
+  <string name="in_app_item_title">InAppItem</string>
 </resources>
