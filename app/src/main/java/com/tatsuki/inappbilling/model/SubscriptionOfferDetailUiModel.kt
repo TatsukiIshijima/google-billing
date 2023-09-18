@@ -26,5 +26,17 @@ data class SubscriptionOfferDetailUiModel(
         pricingPhase = pricingPhase
       )
     }
+
+    fun fake(
+      basePlanId: String = "basePlanId",
+      offerId: String = "offerId",
+      offerToken: String = "offerToken",
+      pricingPhase: PricingPhaseUiModel = PricingPhaseUiModel.fake()
+    ): SubscriptionOfferDetailUiModel = SubscriptionOfferDetailUiModel(
+      basePlanId = basePlanId,
+      offerId = offerId,
+      offerToken = offerToken,
+      pricingPhase = pricingPhase,
+    )
   }
 }

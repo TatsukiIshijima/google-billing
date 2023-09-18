@@ -11,5 +11,11 @@ data class PricingPhaseUiModel(
         formattedPrice = pricingPhase.formattedPrice
       )
     }
+
+    fun fake(
+      formattedPrice: String = "¥ 10"
+    ): PricingPhaseUiModel = PricingPhaseUiModel(
+      formattedPrice = formattedPrice,
+    )
   }
 }
