@@ -53,10 +53,11 @@ class MainActivity : ComponentActivity() {
               productDetails = productDetails,
             )
           },
-          onSubscriptionClick = { selectedProductDetailsIndex, selectedOfferToken ->
+          onSubscriptionClick = { uiModel ->
             composableScope.launch {
-              val selectedProductDetails =
-                productDetailsWithSubscriptionList[selectedProductDetailsIndex]
+              val selectedProductDetails = productDetailsWithSubscriptionList[uiModel.parentIndex]
+              val selectedSubscriptionOfferDetail = selectedProductDetails.subscriptionOfferDetails?.get(uiModel.index)
+              val selectedOfferToken = selectedSubscriptionOfferDetail?.offerToken ?: ""
               Log.d(TAG, "selectedProductDetails=$selectedProductDetails")
               billingClientLifecycle.purchaseSubscription(
                 productDetails = selectedProductDetails,

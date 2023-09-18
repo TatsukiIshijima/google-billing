@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
+import com.tatsuki.inappbilling.model.SubscriptionOfferDetailUiModel
 import com.tatsuki.inappbilling.ui.compose.util.HeaderItem
 import com.tatsuki.inappbilling.ui.compose.util.ItemBackground
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
@@ -22,7 +23,7 @@ import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 fun SubscriptionScreen(
   modifier: Modifier = Modifier,
   productDetailsList: List<ProductDetailsUiModel>,
-  onClick: (index: Int, offerToken: String) -> Unit = { _, _ -> },
+  onClick: (uiModel: SubscriptionOfferDetailUiModel) -> Unit = { _ -> },
 ) {
   LazyColumn(
     modifier = modifier
@@ -43,9 +44,7 @@ fun SubscriptionScreen(
           SubscriptionOfferDetailsItemBody(
             productDetails = productDetails,
             onClick = { subscriptionOfferDetailsIndex ->
-              val offerToken =
-                productDetails.subscriptionOfferDetailsList[subscriptionOfferDetailsIndex].offerToken
-              onClick(productDetailsIndex, offerToken)
+              onClick(productDetails.subscriptionOfferDetailsList[subscriptionOfferDetailsIndex])
             }
           )
         },

@@ -3,6 +3,8 @@ package com.tatsuki.inappbilling.model
 import com.android.billingclient.api.ProductDetails
 
 data class SubscriptionOfferDetailUiModel(
+  val parentIndex: Int,
+  val index: Int,
   val basePlanId: String,
   val offerId: String,
   val offerToken: String,
@@ -11,6 +13,8 @@ data class SubscriptionOfferDetailUiModel(
 
   companion object {
     fun from(
+      parentIndex: Int,
+      index: Int,
       subscriptionOfferDetails: ProductDetails.SubscriptionOfferDetails,
     ): SubscriptionOfferDetailUiModel {
 
@@ -20,6 +24,8 @@ data class SubscriptionOfferDetailUiModel(
       )
 
       return SubscriptionOfferDetailUiModel(
+        parentIndex = parentIndex,
+        index = index,
         basePlanId = subscriptionOfferDetails.basePlanId,
         offerId = subscriptionOfferDetails.offerId ?: "-",
         offerToken = subscriptionOfferDetails.offerToken,
@@ -28,11 +34,15 @@ data class SubscriptionOfferDetailUiModel(
     }
 
     fun fake(
+      parentIndex: Int = 0,
+      index: Int = 0,
       basePlanId: String = "basePlanId",
       offerId: String = "offerId",
       offerToken: String = "offerToken",
       pricingPhase: PricingPhaseUiModel = PricingPhaseUiModel.fake()
     ): SubscriptionOfferDetailUiModel = SubscriptionOfferDetailUiModel(
+      parentIndex = parentIndex,
+      index = index,
       basePlanId = basePlanId,
       offerId = offerId,
       offerToken = offerToken,

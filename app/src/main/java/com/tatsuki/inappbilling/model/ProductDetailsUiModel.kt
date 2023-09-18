@@ -21,10 +21,15 @@ data class ProductDetailsUiModel(
         name = productDetails.name,
         productId = productDetails.productId,
         productType = productDetails.productType,
-        subscriptionOfferDetailsList = productDetails.subscriptionOfferDetails?.map {
-          SubscriptionOfferDetailUiModel.from(it)
+        subscriptionOfferDetailsList = productDetails.subscriptionOfferDetails?.mapIndexed { childIndex, subscriptionOfferDetails ->
+          SubscriptionOfferDetailUiModel.from(
+            parentIndex = index,
+            index = childIndex,
+            subscriptionOfferDetails
+          )
         } ?: emptyList(),
-        oneTimePurchaseOfferDetail = productDetails.oneTimePurchaseOfferDetails?.let { oneTimePurchaseOfferDetails ->
+        oneTimePurchaseOfferDetail =
+        productDetails.oneTimePurchaseOfferDetails?.let { oneTimePurchaseOfferDetails ->
           OneTimePurchaseOfferDetailUiModel.from(
             index = index,
             productDetails = productDetails,
