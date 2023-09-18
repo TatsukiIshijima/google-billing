@@ -1,5 +1,9 @@
 package com.tatsuki.inappbilling
 
+import com.tatsuki.google.billing.model.Product
+import com.tatsuki.google.billing.model.ProductId
+import com.tatsuki.google.billing.model.ProductType
+
 /**
  * https://github.com/android/play-billing-samples/blob/master/ClassyTaxiAppKotlin/app/src/main/java/com/example/billing/Constants.kt
  */
@@ -29,4 +33,47 @@ object Constants {
   // Offer id same as offer id in this app.
   const val TRIAL = "trial"
   const val DISCOUNT = "discount"
+
+  // ConsumeItemIds
+  const val TEST_IN_APP_BILLING_CONSUME_ITEM_1 = "test.inappbilling.consume.item1"
+  const val TEST_IN_APP_BILLING_CONSUME_ITEM_2 = "test.inappbilling.consume.item2"
+  const val TEST_IN_APP_BILLING_CONSUME_ITEM_3 = "test.inappbilling.consume.item3"
+
+  val SubscriptionList = listOf(
+    Product(
+      ProductId(TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_1),
+      ProductType.Subscription()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_2),
+      ProductType.Subscription()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_3),
+      ProductType.Subscription()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_4),
+      ProductType.Subscription()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_5),
+      ProductType.Subscription()
+    ),
+  )
+
+  val InAppItemList = listOf(
+    Product(
+      ProductId(TEST_IN_APP_BILLING_CONSUME_ITEM_1),
+      ProductType.InApp()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_CONSUME_ITEM_2),
+      ProductType.InApp()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_CONSUME_ITEM_3),
+      ProductType.InApp()
+    )
+  )
 }

@@ -60,7 +60,7 @@ class BillingClientLifecycle @Inject constructor(
     activity: Activity,
   ): List<Purchase>? {
 
-    Log.i(TAG, "selectedProductDetails=$productDetails")
+    Log.d(TAG, "selectedProductDetails=$productDetails")
     val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
 
     // Upgrade or downgrade when purchase another subscription while subscribing to a subscription.
@@ -68,7 +68,7 @@ class BillingClientLifecycle @Inject constructor(
       .find { purchase ->
         !purchase.products.contains(productDetails.productId)
       }
-    Log.i(TAG, "oldPurchase=$oldPurchase")
+    Log.d(TAG, "oldPurchase=$oldPurchase")
     val oldPurchaseToken = if (oldPurchase?.purchaseState == Purchase.PurchaseState.PURCHASED) {
       oldPurchase.purchaseToken
     } else {
@@ -87,6 +87,28 @@ class BillingClientLifecycle @Inject constructor(
     purchaseToken: String,
   ) {
     googleBillingService.acknowledgePurchase(purchaseToken)
+  }
+
+  suspend fun purchaseConsumeProduct(
+    productDetails: ProductDetails,
+    activity: Activity,
+  ): List<Purchase>? {
+    return try {
+      Log.d(TAG, "selectedProductDetails=$productDetails")
+      googleBillingService.purchaseConsumableProduct(
+        productDetails = productDetails,
+        activity = activity,
+      )
+    } catch (e: GoogleBillingServiceException) {
+      Log.e(TAG, "$e")
+      null
+    }
+  }
+
+  suspend fun consume(
+    purchaseToken: String
+  ) {
+    googleBillingService.consumePurchase(purchaseToken)
   }
 
   companion object {

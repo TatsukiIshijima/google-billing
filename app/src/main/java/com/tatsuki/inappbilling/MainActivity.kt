@@ -77,7 +77,19 @@ class MainActivity : ComponentActivity() {
             }
           },
           onInAppItemClick = { uiModel ->
-
+            composableScope.launch {
+              val selectedProductDetails = productDetailsWithInAppItemList[uiModel.index]
+              billingClientLifecycle.purchaseConsumeProduct(
+                productDetails = selectedProductDetails,
+                activity = this@MainActivity
+              )?.let { purchases ->
+                val purchase = purchases.first()
+                if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) {
+                  return@let
+                }
+                billingClientLifecycle.consume(purchase.purchaseToken)
+              }
+            }
           },
         )
       }
