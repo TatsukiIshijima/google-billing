@@ -9,8 +9,6 @@ import com.android.billingclient.api.Purchase
 import com.tatsuki.google.billing.model.type.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingService
 import com.tatsuki.google.billing.GoogleBillingServiceException
-import com.tatsuki.google.billing.model.Product
-import com.tatsuki.google.billing.model.ProductId
 import com.tatsuki.google.billing.model.ProductType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,38 +29,20 @@ class BillingClientLifecycle @Inject constructor(
     CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ) : DefaultLifecycleObserver {
 
-  val mutableProductDetailsList = MutableStateFlow(emptyList<ProductDetails>())
+  val mutableProductDetailsWithSubscriptionList = MutableStateFlow(emptyList<ProductDetails>())
+  val mutableProductDetailsWithInAppItemList = MutableStateFlow(emptyList<ProductDetails>())
 
   override fun onCreate(owner: LifecycleOwner) {
     coroutineScope.launch {
       try {
         val connectionState = googleBillingService.connect()
         if (connectionState == ConnectionState.CONNECTED) {
-          val productDetailsList = googleBillingService.queryProductDetails(
-            listOf(
-              Product(
-                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_1),
-                ProductType.Subscription()
-              ),
-              Product(
-                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_2),
-                ProductType.Subscription()
-              ),
-              Product(
-                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_3),
-                ProductType.Subscription()
-              ),
-              Product(
-                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_4),
-                ProductType.Subscription()
-              ),
-              Product(
-                ProductId(Constants.TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_5),
-                ProductType.Subscription()
-              )
-            )
-          )
-          mutableProductDetailsList.value = productDetailsList
+          val productDetailsWithSubscriptionList =
+            googleBillingService.queryProductDetails(Constants.SubscriptionList)
+          val productDetailsWithInAppItemList =
+            googleBillingService.queryProductDetails(Constants.InAppItemList)
+          mutableProductDetailsWithSubscriptionList.value = productDetailsWithSubscriptionList
+          mutableProductDetailsWithInAppItemList.value = productDetailsWithInAppItemList
         }
       } catch (e: GoogleBillingServiceException) {
         Log.e(TAG, "$e")
