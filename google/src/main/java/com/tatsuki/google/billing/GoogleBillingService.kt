@@ -1,6 +1,7 @@
 package com.tatsuki.google.billing
 
 import android.app.Activity
+import com.android.billingclient.api.AccountIdentifiers
 import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams.ReplacementMode
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
@@ -30,10 +31,9 @@ interface GoogleBillingService {
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
-    obfuscatedAccountId: String? = null,
-    obfuscatedProfileId: String? = null,
+    accountIdentifiers: AccountIdentifiers? = null,
     oldPurchaseToken: String? = null,
-    subscriptionReplacementMode: Int = ReplacementMode.WITH_TIME_PRORATION,
+    @ReplacementMode subscriptionReplacementMode: Int = ReplacementMode.WITH_TIME_PRORATION,
   ): List<Purchase>?
 
   suspend fun consumePurchase(purchaseToken: String)

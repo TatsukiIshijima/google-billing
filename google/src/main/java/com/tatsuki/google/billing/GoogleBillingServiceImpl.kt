@@ -3,12 +3,14 @@ package com.tatsuki.google.billing
 import android.app.Activity
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import com.android.billingclient.api.AccountIdentifiers
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
+import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams.ReplacementMode
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ProductDetails
@@ -211,18 +213,17 @@ class GoogleBillingServiceImpl(
     productDetails: ProductDetails,
     offerToken: String,
     activity: Activity,
-    obfuscatedAccountId: String?,
-    obfuscatedProfileId: String?,
+    accountIdentifiers: AccountIdentifiers?,
     oldPurchaseToken: String?,
-    subscriptionReplacementMode: Int,
+    @ReplacementMode subscriptionReplacementMode: Int,
   ): List<Purchase> {
     return suspendCancellableCoroutine { continuation ->
       val launchBillingFlowTask = launchSubscriptionBillingFlow(
         productDetails = productDetails,
         offerToken = offerToken,
         activity = activity,
-        obfuscatedAccountId = obfuscatedAccountId,
-        obfuscatedProfileId = obfuscatedProfileId,
+        obfuscatedAccountId = accountIdentifiers?.obfuscatedAccountId,
+        obfuscatedProfileId = accountIdentifiers?.obfuscatedProfileId,
         oldPurchaseToken = oldPurchaseToken,
         subscriptionReplacementMode = subscriptionReplacementMode,
       )
