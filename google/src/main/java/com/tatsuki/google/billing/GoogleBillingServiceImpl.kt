@@ -22,9 +22,9 @@ import com.tatsuki.google.billing.listener.OnBillingServiceConnectionListener
 import com.tatsuki.google.billing.listener.OnPurchasesUpdatedListener
 import com.tatsuki.google.billing.listener.PurchasesListener
 import com.tatsuki.google.billing.model.Product
-import com.tatsuki.google.billing.model.ProductType
 import com.tatsuki.google.billing.model.RequestId
 import com.tatsuki.google.billing.model.type.ConnectionState
+import com.tatsuki.google.billing.model.type.ProductType
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException

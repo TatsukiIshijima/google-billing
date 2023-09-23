@@ -1,6 +1,7 @@
 package com.tatsuki.google.billing.model
 
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.tatsuki.google.billing.model.type.ProductType
 
 data class Product(
   val id: ProductId,
