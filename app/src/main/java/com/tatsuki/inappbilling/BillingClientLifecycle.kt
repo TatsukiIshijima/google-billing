@@ -9,7 +9,7 @@ import com.android.billingclient.api.Purchase
 import com.tatsuki.google.billing.model.type.ConnectionState
 import com.tatsuki.google.billing.GoogleBillingService
 import com.tatsuki.google.billing.GoogleBillingServiceException
-import com.tatsuki.google.billing.model.ProductType
+import com.tatsuki.google.billing.model.type.ProductType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
