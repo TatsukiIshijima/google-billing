@@ -2,7 +2,7 @@ package com.tatsuki.inappbilling.module
 
 import android.content.Context
 import com.android.billingclient.api.PurchasesUpdatedListener
-import com.tatsuki.google.billing.GoogleBillingClientFactory
+import com.tatsuki.billing.core.GoogleBillingClientFactory
 import com.tatsuki.google.billing.GoogleBillingClientFactoryImpl
 import com.tatsuki.google.billing.GoogleBillingService
 import com.tatsuki.google.billing.GoogleBillingServiceImpl

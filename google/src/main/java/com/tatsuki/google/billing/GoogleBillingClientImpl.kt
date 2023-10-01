@@ -3,6 +3,7 @@ package com.tatsuki.google.billing
 import android.app.Activity
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClient.FeatureType
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
@@ -19,8 +20,7 @@ import com.android.billingclient.api.consumePurchase
 import com.android.billingclient.api.queryProductDetails
 import com.android.billingclient.api.queryPurchaseHistory
 import com.android.billingclient.api.queryPurchasesAsync
-import com.tatsuki.google.billing.model.type.BillingFeatureType
-import com.tatsuki.google.billing.model.type.ConnectionState
+import com.tatsuki.billing.core.GoogleBillingClient
 
 class GoogleBillingClientImpl(
   private val billingClient: BillingClient,
@@ -28,9 +28,6 @@ class GoogleBillingClientImpl(
 
   override val isReady: Boolean
     get() = billingClient.isReady
-
-  override val connectionState: ConnectionState
-    get() = ConnectionState.from(billingClient.connectionState)
 
   override fun connect(listener: BillingClientStateListener) {
     billingClient.startConnection(listener)
@@ -67,7 +64,7 @@ class GoogleBillingClientImpl(
     return billingClient.acknowledgePurchase(params)
   }
 
-  override fun isFeatureSupport(featureType: BillingFeatureType): BillingResult {
-    return billingClient.isFeatureSupported(featureType.value)
+  override fun isFeatureSupport(@FeatureType featureType: String): BillingResult {
+    return billingClient.isFeatureSupported(featureType)
   }
 }

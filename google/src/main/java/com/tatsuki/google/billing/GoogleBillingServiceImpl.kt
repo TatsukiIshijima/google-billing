@@ -19,6 +19,7 @@ import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
+import com.tatsuki.billing.core.GoogleBillingClientFactory
 import com.tatsuki.google.billing.listener.ConnectionStateListener
 import com.tatsuki.google.billing.listener.OnBillingServiceConnectionListener
 import com.tatsuki.google.billing.listener.OnPurchasesUpdatedListener
@@ -46,7 +47,7 @@ class GoogleBillingServiceImpl(
 
   override suspend fun connect(): ConnectionState {
     if (billingClient.isReady) {
-      return billingClient.connectionState
+      return ConnectionState.CONNECTED
     }
 
     return suspendCancellableCoroutine { continuation ->
@@ -59,7 +60,7 @@ class GoogleBillingServiceImpl(
           override fun onBillingSetupFinished(billingResult: BillingResult) {
             connectionListener.removeOnBillingServiceConnectionListener(requestId)
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-              continuation.resume(billingClient.connectionState)
+              continuation.resume(ConnectionState.CONNECTED)
             } else {
               continuation.resumeWithException(billingResult.responseCode.toException())
             }
@@ -67,7 +68,7 @@ class GoogleBillingServiceImpl(
 
           override fun onBillingServiceDisconnected() {
             connectionListener.removeOnBillingServiceConnectionListener(requestId)
-            continuation.resume(billingClient.connectionState)
+            continuation.resume(ConnectionState.DISCONNECTED)
           }
         }
       )

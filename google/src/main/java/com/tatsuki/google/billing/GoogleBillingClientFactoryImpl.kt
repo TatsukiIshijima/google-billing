@@ -3,6 +3,8 @@ package com.tatsuki.google.billing
 import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.tatsuki.billing.core.GoogleBillingClient
+import com.tatsuki.billing.core.GoogleBillingClientFactory
 
 class GoogleBillingClientFactoryImpl(
   private val context: Context,

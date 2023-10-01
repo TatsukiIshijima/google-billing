@@ -81,6 +81,7 @@ android {
 
 dependencies {
 
+  implementation(project(":core"))
   implementation(project(":google"))
 //  implementation("com.github.TatsukiIshijima:google-billing:0.0.2")
   implementation("androidx.core:core-ktx:1.10.1")
