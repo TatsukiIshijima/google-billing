@@ -1,11 +1,11 @@
-package com.tatsuki.google
+package com.tatsuki.billing
 
-import com.tatsuki.google.billing.fake.model.FakeOneTimePurchaseOfferDetails
-import com.tatsuki.google.billing.fake.model.FakePricingPhase
-import com.tatsuki.google.billing.fake.model.FakePricingPhases
-import com.tatsuki.google.billing.fake.model.FakeProductDetails
-import com.tatsuki.google.billing.fake.model.FakePurchase
-import com.tatsuki.google.billing.fake.model.FakeSubscriptionOfferDetails
+import com.tatsuki.billing.fake.model.FakeOneTimePurchaseOfferDetails
+import com.tatsuki.billing.fake.model.FakePricingPhase
+import com.tatsuki.billing.fake.model.FakePricingPhases
+import com.tatsuki.billing.fake.model.FakeProductDetails
+import com.tatsuki.billing.fake.model.FakePurchase
+import com.tatsuki.billing.fake.model.FakeSubscriptionOfferDetails
 import org.junit.Test
 
 class CreateFakeModelTest {

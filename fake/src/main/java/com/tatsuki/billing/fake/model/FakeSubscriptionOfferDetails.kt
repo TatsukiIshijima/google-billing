@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing.fake.model
+package com.tatsuki.billing.fake.model
 
 import com.android.billingclient.api.ProductDetails.SubscriptionOfferDetails
 import org.json.JSONArray
