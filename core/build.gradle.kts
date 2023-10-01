@@ -33,4 +33,5 @@ android {
 dependencies {
 
   api("com.android.billingclient:billing:6.0.1")
+  implementation("com.android.billingclient:billing-ktx:6.0.1")
 }
