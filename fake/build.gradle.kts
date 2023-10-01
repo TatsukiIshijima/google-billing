@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-  implementation("com.github.TatsukiIshijima:google-billing:0.0.6")
+  implementation("com.android.billingclient:billing:6.0.1")
   implementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.json:json:20230618")
   testImplementation("junit:junit:4.13.2")
