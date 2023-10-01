@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-  namespace = "com.tatsuki.google"
+  namespace = "com.tatsuki.billing.fake"
   compileSdk = 34
 
   defaultConfig {
@@ -36,7 +36,8 @@ android {
 }
 
 dependencies {
-  implementation("com.android.billingclient:billing:6.0.1")
+  // TODO: get from jitpack
+  implementation(project(":core"))
   implementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.json:json:20230618")
   testImplementation("junit:junit:4.13.2")
