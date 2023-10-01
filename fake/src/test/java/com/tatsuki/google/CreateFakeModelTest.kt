@@ -3,6 +3,7 @@ package com.tatsuki.google
 import com.tatsuki.google.billing.fake.model.FakeOneTimePurchaseOfferDetails
 import com.tatsuki.google.billing.fake.model.FakePricingPhase
 import com.tatsuki.google.billing.fake.model.FakePricingPhases
+import com.tatsuki.google.billing.fake.model.FakeSubscriptionOfferDetails
 import org.junit.Test
 
 class CreateFakeModelTest {
@@ -26,5 +27,14 @@ class CreateFakeModelTest {
     val fakeOneTimePurchaseOfferDetails = FakeOneTimePurchaseOfferDetails.create()
     val realOneTimePurchaseOfferDetails = fakeOneTimePurchaseOfferDetails.toReal()
     assert(fakeOneTimePurchaseOfferDetails.formattedPrice == realOneTimePurchaseOfferDetails.formattedPrice)
+  }
+
+  @Test
+  fun create_fake_subscription_offer_details() {
+    val fakeSubscriptionOfferDetails = FakeSubscriptionOfferDetails.create()
+    val realSubscriptionOfferDetails = fakeSubscriptionOfferDetails.toReal()
+    assert(fakeSubscriptionOfferDetails.basePlanId == realSubscriptionOfferDetails.basePlanId)
+    assert(fakeSubscriptionOfferDetails.offerIdToken == realSubscriptionOfferDetails.offerToken)
+    assert(fakeSubscriptionOfferDetails.offerTags.size == realSubscriptionOfferDetails.offerTags.size)
   }
 }
