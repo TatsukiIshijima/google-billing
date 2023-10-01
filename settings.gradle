@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "google-billing"
 include ':app'
 include ':google'
+include ':fake'
