@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,7 +78,7 @@ class BillingClientLifecycle @Inject constructor(
       googleBillingService.purchaseSubscription(
         productDetails = productDetails,
         offerToken = offerToken,
-        activity = activity,
+        activityRef = WeakReference(activity),
         oldPurchaseToken = oldPurchaseToken,
       )
     } catch (e: GoogleBillingServiceException) {
@@ -103,7 +104,7 @@ class BillingClientLifecycle @Inject constructor(
     return try {
       googleBillingService.purchaseConsumableProduct(
         productDetails = productDetails,
-        activity = activity,
+        activityRef = WeakReference(activity),
       )
     } catch (e: GoogleBillingServiceException) {
       Log.e(TAG, "$e")
