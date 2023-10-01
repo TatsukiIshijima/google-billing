@@ -28,6 +28,7 @@ import com.tatsuki.google.billing.model.RequestId
 import com.tatsuki.google.billing.model.type.ConnectionState
 import com.tatsuki.google.billing.model.type.ProductType
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -130,8 +131,9 @@ class GoogleBillingServiceImpl(
 
   private fun launchConsumableProductBillingFlow(
     productDetails: ProductDetails,
-    activity: Activity,
+    activityRef: WeakReference<Activity>,
   ): BillingResult {
+
     val productDetailsParams = ProductDetailsParams.newBuilder()
       .setProductDetails(productDetails)
       .build()
@@ -143,18 +145,18 @@ class GoogleBillingServiceImpl(
 
     return billingClient.launchBillingFlow(
       params = billingFlowParams,
-      activity = activity
+      activity = activityRef.get()!!
     )
   }
 
   override suspend fun purchaseConsumableProduct(
     productDetails: ProductDetails,
-    activity: Activity,
+    activityRef: WeakReference<Activity>,
   ): List<Purchase>? {
     return suspendCancellableCoroutine { continuation ->
       val launchBillingFlowTask = launchConsumableProductBillingFlow(
         productDetails = productDetails,
-        activity = activity
+        activityRef = activityRef
       )
       handleLaunchBillingFlowResult(
         billingResult = launchBillingFlowTask,
@@ -167,7 +169,7 @@ class GoogleBillingServiceImpl(
   private fun launchSubscriptionBillingFlow(
     productDetails: ProductDetails,
     offerToken: String,
-    activity: Activity,
+    activityRef: WeakReference<Activity>,
     obfuscatedAccountId: String?,
     obfuscatedProfileId: String?,
     oldPurchaseToken: String?,
@@ -205,14 +207,14 @@ class GoogleBillingServiceImpl(
     }
     return billingClient.launchBillingFlow(
       params = billingFlowParams.build(),
-      activity = activity
+      activity = activityRef.get()!!
     )
   }
 
   override suspend fun purchaseSubscription(
     productDetails: ProductDetails,
     offerToken: String,
-    activity: Activity,
+    activityRef: WeakReference<Activity>,
     accountIdentifiers: AccountIdentifiers?,
     oldPurchaseToken: String?,
     @ReplacementMode subscriptionReplacementMode: Int,
@@ -221,7 +223,7 @@ class GoogleBillingServiceImpl(
       val launchBillingFlowTask = launchSubscriptionBillingFlow(
         productDetails = productDetails,
         offerToken = offerToken,
-        activity = activity,
+        activityRef = activityRef,
         obfuscatedAccountId = accountIdentifiers?.obfuscatedAccountId,
         obfuscatedProfileId = accountIdentifiers?.obfuscatedProfileId,
         oldPurchaseToken = oldPurchaseToken,
