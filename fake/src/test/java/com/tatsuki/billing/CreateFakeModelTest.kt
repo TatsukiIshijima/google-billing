@@ -57,5 +57,7 @@ class CreateFakeModelTest {
     assert(fakePurchase.products.first() == realPurchase.products.first())
     assert(fakePurchase.purchaseToken == realPurchase.purchaseToken)
     assert(fakePurchase.signature == realPurchase.signature)
+    assert(fakePurchase.purchaseState == realPurchase.purchaseState)
+    assert(fakePurchase.isAcknowledged == realPurchase.isAcknowledged)
   }
 }
