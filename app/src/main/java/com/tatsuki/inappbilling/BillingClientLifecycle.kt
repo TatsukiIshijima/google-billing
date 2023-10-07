@@ -6,10 +6,10 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
-import com.tatsuki.billing.model.type.ConnectionState
-import com.tatsuki.billing.GoogleBillingService
-import com.tatsuki.billing.GoogleBillingServiceException
-import com.tatsuki.billing.model.type.ProductType
+import com.tatsuki.billing.feature.model.type.ConnectionState
+import com.tatsuki.billing.feature.GoogleBillingService
+import com.tatsuki.billing.feature.GoogleBillingServiceException
+import com.tatsuki.billing.feature.model.type.ProductType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
