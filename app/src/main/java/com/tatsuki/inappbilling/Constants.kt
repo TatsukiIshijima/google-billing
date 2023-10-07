@@ -1,8 +1,8 @@
 package com.tatsuki.inappbilling
 
-import com.tatsuki.google.billing.model.Product
-import com.tatsuki.google.billing.model.ProductId
-import com.tatsuki.google.billing.model.type.ProductType
+import com.tatsuki.billing.feature.model.Product
+import com.tatsuki.billing.feature.model.ProductId
+import com.tatsuki.billing.feature.model.type.ProductType
 
 /**
  * https://github.com/android/play-billing-samples/blob/master/ClassyTaxiAppKotlin/app/src/main/java/com/example/billing/Constants.kt

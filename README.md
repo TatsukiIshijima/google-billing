@@ -24,7 +24,10 @@ dependencyResolutionManagement {
 
  ```
 dependencies {
-    implementation 'com.github.TatsukiIshijima:google-billing:$version'
+    implementation("com.github.TatsukiIshijima.google-billing:core:$version")
+    implementation("com.github.TatsukiIshijima.google-billing:feature:$version")
+    // option
+    // testImplementation("com.github.TatsukiIshijima.google-billing:feature:$version")
 }
  ```
 
@@ -111,6 +114,24 @@ coroutineScope.launch {
 
   }
 }
+```
+
+## Local build
+To build in a local environment, execute the following command in project directory. If successful, an artifact for each module will be created in $HOME/.m2/google-billing.
+
+### core
+```shell
+./gradlew :core:publishToMavenLocal
+```
+
+### feature
+```shell
+./gradlew :feature:publishToMavenLocal
+```
+
+### fake
+```shell
+./gradlew :fake:publishToMavenLocal
 ```
 
 ## Sample App
