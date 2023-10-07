@@ -83,6 +83,8 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":feature"))
+//  implementation("com.github.TatsukiIshijima.google-billing:core:change-multi-module-SNAPSHOT")
+//  implementation("com.github.TatsukiIshijima.google-billing:feature:change-multi-module-SNAPSHOT")
   //  implementation("com.github.TatsukiIshijima:google-billing:0.0.2")
   implementation("androidx.core:core-ktx:1.10.1")
   implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
