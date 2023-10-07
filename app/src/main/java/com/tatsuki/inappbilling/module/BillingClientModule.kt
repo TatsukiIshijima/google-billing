@@ -3,10 +3,10 @@ package com.tatsuki.inappbilling.module
 import android.content.Context
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.tatsuki.billing.core.GoogleBillingClientFactory
-import com.tatsuki.google.billing.GoogleBillingClientFactoryImpl
-import com.tatsuki.google.billing.GoogleBillingService
-import com.tatsuki.google.billing.GoogleBillingServiceImpl
-import com.tatsuki.google.billing.listener.PurchasesListener
+import com.tatsuki.billing.GoogleBillingClientFactoryImpl
+import com.tatsuki.billing.GoogleBillingService
+import com.tatsuki.billing.GoogleBillingServiceImpl
+import com.tatsuki.billing.listener.PurchasesListener
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

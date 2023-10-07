@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing.model.type
+package com.tatsuki.billing.model.type
 
 import com.android.billingclient.api.BillingClient
 import java.lang.IllegalStateException

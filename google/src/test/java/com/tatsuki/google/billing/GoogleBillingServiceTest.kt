@@ -1,10 +1,12 @@
 package com.tatsuki.google.billing
 
-import com.tatsuki.google.billing.listener.ConnectionStateListener
-import com.tatsuki.google.billing.model.Product
-import com.tatsuki.google.billing.model.ProductId
-import com.tatsuki.google.billing.model.type.ProductType
-import com.tatsuki.google.billing.model.type.ConnectionState
+import com.tatsuki.billing.GoogleBillingServiceException
+import com.tatsuki.billing.GoogleBillingServiceImpl
+import com.tatsuki.billing.listener.ConnectionStateListener
+import com.tatsuki.billing.model.Product
+import com.tatsuki.billing.model.ProductId
+import com.tatsuki.billing.model.type.ProductType
+import com.tatsuki.billing.model.type.ConnectionState
 import com.tatsuki.google.billing.pattern.AcknowledgePattern
 import com.tatsuki.google.billing.pattern.ConnectionPattern
 import com.tatsuki.google.billing.pattern.ConsumePattern

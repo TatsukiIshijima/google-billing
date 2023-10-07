@@ -1,10 +1,10 @@
-package com.tatsuki.google.billing.listener
+package com.tatsuki.billing.listener
 
 import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
-import com.tatsuki.google.billing.model.RequestId
+import com.tatsuki.billing.model.RequestId
 import java.util.UUID
 
 object PurchasesListener : PurchasesUpdatedListener {

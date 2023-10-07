@@ -13,8 +13,8 @@ import com.android.billingclient.api.PurchasesResult
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.tatsuki.google.billing.model.type.BillingFeatureType
-import com.tatsuki.google.billing.model.type.ConnectionState
+import com.tatsuki.billing.model.type.BillingFeatureType
+import com.tatsuki.billing.model.type.ConnectionState
 import com.tatsuki.google.billing.pattern.AcknowledgePattern
 import com.tatsuki.google.billing.pattern.ConnectionPattern
 import com.tatsuki.google.billing.pattern.ConsumePattern

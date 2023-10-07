@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing.model
+package com.tatsuki.billing.model
 
 import java.util.UUID
 

@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing.listener
+package com.tatsuki.billing.listener
 
 import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.BillingClientStateListener

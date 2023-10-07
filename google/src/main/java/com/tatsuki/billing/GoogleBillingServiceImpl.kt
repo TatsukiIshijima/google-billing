@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing
+package com.tatsuki.billing
 
 import android.app.Activity
 import android.util.Log
@@ -20,14 +20,14 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.tatsuki.billing.core.GoogleBillingClientFactory
-import com.tatsuki.google.billing.listener.ConnectionStateListener
-import com.tatsuki.google.billing.listener.OnBillingServiceConnectionListener
-import com.tatsuki.google.billing.listener.OnPurchasesUpdatedListener
-import com.tatsuki.google.billing.listener.PurchasesListener
-import com.tatsuki.google.billing.model.Product
-import com.tatsuki.google.billing.model.RequestId
-import com.tatsuki.google.billing.model.type.ConnectionState
-import com.tatsuki.google.billing.model.type.ProductType
+import com.tatsuki.billing.listener.ConnectionStateListener
+import com.tatsuki.billing.listener.OnBillingServiceConnectionListener
+import com.tatsuki.billing.listener.OnPurchasesUpdatedListener
+import com.tatsuki.billing.listener.PurchasesListener
+import com.tatsuki.billing.model.Product
+import com.tatsuki.billing.model.RequestId
+import com.tatsuki.billing.model.type.ConnectionState
+import com.tatsuki.billing.model.type.ProductType
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.WeakReference
 import kotlin.coroutines.resume

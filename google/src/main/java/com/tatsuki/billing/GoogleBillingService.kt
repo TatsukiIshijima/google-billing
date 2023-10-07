@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing
+package com.tatsuki.billing
 
 import android.app.Activity
 import com.android.billingclient.api.AccountIdentifiers
@@ -6,9 +6,9 @@ import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams.
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchaseHistoryRecord
-import com.tatsuki.google.billing.model.Product
-import com.tatsuki.google.billing.model.type.ConnectionState
-import com.tatsuki.google.billing.model.type.ProductType
+import com.tatsuki.billing.model.Product
+import com.tatsuki.billing.model.type.ConnectionState
+import com.tatsuki.billing.model.type.ProductType
 import java.lang.ref.WeakReference
 
 interface GoogleBillingService {

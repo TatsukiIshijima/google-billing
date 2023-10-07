@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing
+package com.tatsuki.billing
 
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 

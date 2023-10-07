@@ -1,6 +1,6 @@
 package com.tatsuki.inappbilling.module
 
-import com.tatsuki.google.billing.GoogleBillingService
+import com.tatsuki.billing.GoogleBillingService
 import com.tatsuki.inappbilling.BillingClientLifecycle
 import dagger.Module
 import dagger.Provides

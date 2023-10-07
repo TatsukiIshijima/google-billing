@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing
+package com.tatsuki.billing
 
 import android.app.Activity
 import com.android.billingclient.api.AcknowledgePurchaseParams

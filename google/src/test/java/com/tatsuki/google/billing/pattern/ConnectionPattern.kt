@@ -2,7 +2,7 @@ package com.tatsuki.google.billing.pattern
 
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingResult
-import com.tatsuki.google.billing.model.type.ConnectionState
+import com.tatsuki.billing.model.type.ConnectionState
 
 sealed interface ConnectionPattern {
   val isReady: Boolean

@@ -1,4 +1,4 @@
-package com.tatsuki.google.billing.model
+package com.tatsuki.billing.model
 
 data class ProductId(
   val value: String
