@@ -8,10 +8,12 @@ import com.tatsuki.billing.core.GoogleBillingClientFactory
 
 class GoogleBillingClientFactoryImpl(
   private val context: Context,
-  private val purchasesUpdatedListener: PurchasesUpdatedListener,
 ) : GoogleBillingClientFactory {
 
-  override fun create(enablePendingPurchases: Boolean): GoogleBillingClient {
+  override fun create(
+    enablePendingPurchases: Boolean,
+    purchasesUpdatedListener: PurchasesUpdatedListener,
+  ): GoogleBillingClient {
     val billingClient = BillingClient.newBuilder(context)
       .setListener(purchasesUpdatedListener)
     if (enablePendingPurchases) {
