@@ -3,6 +3,7 @@ package com.tatsuki.billing.fake.model
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.Purchase.PurchaseState
 import org.json.JSONObject
+import java.util.UUID
 
 data class FakePurchase(
   val products: List<String>,
@@ -25,10 +26,10 @@ data class FakePurchase(
   companion object {
     fun create(
       products: List<String> = listOf("productId"),
-      purchaseToken: String = "purchaseToken",
+      purchaseToken: String = UUID.randomUUID().toString(),
       signature: String = "signature",
       @PurchaseState purchaseState: Int = PurchaseState.PURCHASED,
-      isAcknowledged: Boolean = true,
+      isAcknowledged: Boolean = false,
     ): FakePurchase {
       return FakePurchase(
         products = products,
