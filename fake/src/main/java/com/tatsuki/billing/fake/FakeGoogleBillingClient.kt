@@ -23,7 +23,7 @@ class FakeGoogleBillingClient(
   private val purchasesUpdatedListener: PurchasesUpdatedListener,
 ) : GoogleBillingClient {
 
-  private var status: FakeServiceStatus = FakeServiceStatus.Available
+  private var status: FakeServiceStatus = FakeServiceStatus.Available.Subscription
 
   fun setup(fakeServiceStatus: FakeServiceStatus) {
     status = fakeServiceStatus
@@ -98,7 +98,28 @@ class FakeGoogleBillingClient(
       FakeServiceOperationResults.create(status).queryPurchaseHistoryResult
     val purchaseHistoryRecords =
       if (queryPurchaseHistoryResult.responseCode == BillingResponseCode.OK) {
-        (purchases + recordPurchases).map { it.toFakePurchaseHistoryRecord().toReal() }
+        val allPurchases = (purchases + recordPurchases)
+        when (status) {
+          FakeServiceStatus.Available.InApp -> {
+            allPurchases
+              // Purchase type cannot be determined from QueryPurchaseHistoryParams.
+              // So it is filtered by product id.
+              .filter { it.products.contains(Consts.IN_APP_PRODUCT_ID) }
+              .map { it.toFakePurchaseHistoryRecord() }
+              .map { it.toReal() }
+          }
+
+          FakeServiceStatus.Available.Subscription -> {
+            allPurchases
+              // Purchase type cannot be determined from QueryPurchaseHistoryParams.
+              // So it is filtered by product id.
+              .filter { it.products.contains(Consts.SUBSCRIPTION_PRODUCT_ID) }
+              .map { it.toFakePurchaseHistoryRecord() }
+              .map { it.toReal() }
+          }
+
+          FakeServiceStatus.UnAvailable -> emptyList()
+        }
       } else {
         emptyList()
       }
@@ -121,7 +142,25 @@ class FakeGoogleBillingClient(
     }
     val queryPurchasesResult = FakeServiceOperationResults.create(status).queryPurchasesResult
     val purchaseList = if (queryPurchasesResult.responseCode == BillingResponseCode.OK) {
-      purchases.map { it.toReal() }
+      when (status) {
+        FakeServiceStatus.Available.InApp -> {
+          purchases
+            // Purchase type cannot be determined from QueryPurchaseHistoryParams.
+            // So it is filtered by product id.
+            .filter { it.products.contains(Consts.IN_APP_PRODUCT_ID) }
+            .map { it.toReal() }
+        }
+
+        FakeServiceStatus.Available.Subscription -> {
+          purchases
+            // Purchase type cannot be determined from QueryPurchaseHistoryParams.
+            // So it is filtered by product id.
+            .filter { it.products.contains(Consts.SUBSCRIPTION_PRODUCT_ID) }
+            .map { it.toReal() }
+        }
+
+        FakeServiceStatus.UnAvailable -> emptyList()
+      }
     } else {
       emptyList()
     }
