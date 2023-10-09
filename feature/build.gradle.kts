@@ -42,7 +42,10 @@ dependencies {
   implementation(project(":core"))
   testImplementation(project(":fake"))
   testImplementation("junit:junit:4.13.2")
+  testImplementation("androidx.fragment:fragment-ktx:1.6.1")
+  testImplementation("androidx.test.ext:junit-ktx:1.1.5")
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+  testImplementation("org.robolectric:robolectric:4.9")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
 }
 

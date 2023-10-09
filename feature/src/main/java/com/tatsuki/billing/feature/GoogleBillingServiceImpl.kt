@@ -79,9 +79,6 @@ class GoogleBillingServiceImpl(
     }
   }
 
-  // TODO:Impl retry connect
-  // https://developer.android.com/google/play/billing/errors
-
   override fun disconnect() {
     endConnectionIfReady()
   }
@@ -153,15 +150,31 @@ class GoogleBillingServiceImpl(
     activityRef: WeakReference<Activity>,
   ): List<Purchase>? {
     return suspendCancellableCoroutine { continuation ->
+      val requestId = RequestId()
+      purchasesListener.addOnPurchaseUpdatedListener(
+        requestId = requestId,
+        listener = object : OnPurchasesUpdatedListener {
+          override fun onPurchasesUpdated(
+            billingResult: BillingResult,
+            purchases: MutableList<Purchase>?,
+          ) {
+            purchasesListener.removeOnPurchaseUpdatedListener(requestId)
+            if (billingResult.responseCode == BillingResponseCode.OK) {
+              continuation.resume(purchases)
+            } else {
+              continuation.resumeWithException(billingResult.responseCode.toException())
+            }
+          }
+        }
+      )
       val launchBillingFlowTask = launchConsumableProductBillingFlow(
         productDetails = productDetails,
         activityRef = activityRef
       )
-      handleLaunchBillingFlowResult(
-        billingResult = launchBillingFlowTask,
-        onSuccess = { purchases -> continuation.resume(purchases) },
-        onFailure = { e -> continuation.resumeWithException(e) }
-      )
+      if (launchBillingFlowTask.responseCode != BillingResponseCode.OK) {
+        purchasesListener.removeOnPurchaseUpdatedListener(requestId)
+        continuation.resumeWithException(launchBillingFlowTask.responseCode.toException())
+      }
     }
   }
 
@@ -222,29 +235,6 @@ class GoogleBillingServiceImpl(
     @ReplacementMode subscriptionReplacementMode: Int,
   ): List<Purchase> {
     return suspendCancellableCoroutine { continuation ->
-      val launchBillingFlowTask = launchSubscriptionBillingFlow(
-        productDetails = productDetails,
-        offerToken = offerToken,
-        activityRef = activityRef,
-        obfuscatedAccountId = accountIdentifiers?.obfuscatedAccountId,
-        obfuscatedProfileId = accountIdentifiers?.obfuscatedProfileId,
-        oldPurchaseToken = oldPurchaseToken,
-        subscriptionReplacementMode = subscriptionReplacementMode,
-      )
-      handleLaunchBillingFlowResult(
-        billingResult = launchBillingFlowTask,
-        onSuccess = { purchases -> continuation.resume(purchases) },
-        onFailure = { e -> continuation.resumeWithException(e) }
-      )
-    }
-  }
-
-  private fun handleLaunchBillingFlowResult(
-    billingResult: BillingResult,
-    onSuccess: (purchases: List<Purchase>) -> Unit,
-    onFailure: (e: GoogleBillingServiceException) -> Unit,
-  ) {
-    if (billingResult.responseCode == BillingResponseCode.OK) {
       val requestId = RequestId()
       purchasesListener.addOnPurchaseUpdatedListener(
         requestId = requestId,
@@ -255,15 +245,26 @@ class GoogleBillingServiceImpl(
           ) {
             purchasesListener.removeOnPurchaseUpdatedListener(requestId)
             if (billingResult.responseCode == BillingResponseCode.OK) {
-              onSuccess(purchases ?: emptyList())
+              continuation.resume(purchases ?: emptyList())
             } else {
-              onFailure(billingResult.responseCode.toException())
+              continuation.resumeWithException(billingResult.responseCode.toException())
             }
           }
         }
       )
-    } else {
-      onFailure(billingResult.responseCode.toException())
+      val launchBillingFlowTask = launchSubscriptionBillingFlow(
+        productDetails = productDetails,
+        offerToken = offerToken,
+        activityRef = activityRef,
+        obfuscatedAccountId = accountIdentifiers?.obfuscatedAccountId,
+        obfuscatedProfileId = accountIdentifiers?.obfuscatedProfileId,
+        oldPurchaseToken = oldPurchaseToken,
+        subscriptionReplacementMode = subscriptionReplacementMode,
+      )
+      if (launchBillingFlowTask.responseCode != BillingResponseCode.OK) {
+        purchasesListener.removeOnPurchaseUpdatedListener(requestId)
+        continuation.resumeWithException(launchBillingFlowTask.responseCode.toException())
+      }
     }
   }
 
