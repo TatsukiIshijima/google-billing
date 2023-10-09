@@ -68,6 +68,58 @@ sealed interface FakeServiceOperationResult {
   }
 
   /**
+   * Result of query purchase history.
+   */
+  data class QueryPurchaseHistoryResult(
+    @BillingResponseCode override val responseCode: Int
+  ) : FakeServiceOperationResult {
+
+    companion object {
+      fun create(fakeServiceStatus: FakeServiceStatus): QueryPurchaseHistoryResult {
+        return when (fakeServiceStatus) {
+          is FakeServiceStatus.Available -> {
+            QueryPurchaseHistoryResult(
+              responseCode = BillingResponseCode.OK,
+            )
+          }
+
+          is FakeServiceStatus.UnAvailable -> {
+            QueryPurchaseHistoryResult(
+              responseCode = BillingResponseCode.SERVICE_UNAVAILABLE,
+            )
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Result of query purchases.
+   */
+  data class QueryPurchasesResult(
+    @BillingResponseCode override val responseCode: Int,
+  ) : FakeServiceOperationResult {
+
+    companion object {
+      fun create(fakeServiceStatus: FakeServiceStatus): QueryPurchasesResult {
+        return when (fakeServiceStatus) {
+          is FakeServiceStatus.Available -> {
+            QueryPurchasesResult(
+              responseCode = BillingResponseCode.OK,
+            )
+          }
+
+          is FakeServiceStatus.UnAvailable -> {
+            QueryPurchasesResult(
+              responseCode = BillingResponseCode.SERVICE_UNAVAILABLE,
+            )
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Result of launch billing flow.
    */
   data class LaunchBillingFlowResult(
@@ -120,12 +172,34 @@ sealed interface FakeServiceOperationResult {
     }
   }
 
+  data class AcknowledgeResult(
+    override val responseCode: Int,
+  ) : FakeServiceOperationResult {
+
+    companion object {
+      fun create(fakeServiceStatus: FakeServiceStatus): AcknowledgeResult {
+        return when (fakeServiceStatus) {
+          is FakeServiceStatus.Available -> {
+            AcknowledgeResult(
+              responseCode = BillingResponseCode.OK,
+            )
+          }
+
+          is FakeServiceStatus.UnAvailable -> {
+            AcknowledgeResult(
+              responseCode = BillingResponseCode.SERVICE_UNAVAILABLE,
+            )
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Result of consume process.
    */
   data class ConsumeResult(
     @BillingResponseCode override val responseCode: Int,
-    val purchaseToken: String,
   ) : FakeServiceOperationResult {
 
     companion object {
@@ -134,14 +208,35 @@ sealed interface FakeServiceOperationResult {
           is FakeServiceStatus.Available -> {
             ConsumeResult(
               responseCode = BillingResponseCode.OK,
-              purchaseToken = "purchaseToken",
             )
           }
 
           is FakeServiceStatus.UnAvailable -> {
             ConsumeResult(
               responseCode = BillingResponseCode.SERVICE_UNAVAILABLE,
-              purchaseToken = ""
+            )
+          }
+        }
+      }
+    }
+  }
+
+  data class FeatureSupportResult(
+    @BillingResponseCode override val responseCode: Int
+  ) : FakeServiceOperationResult {
+
+    companion object {
+      fun create(fakeServiceStatus: FakeServiceStatus): FeatureSupportResult {
+        return when (fakeServiceStatus) {
+          is FakeServiceStatus.Available -> {
+            FeatureSupportResult(
+              responseCode = BillingResponseCode.OK,
+            )
+          }
+
+          is FakeServiceStatus.UnAvailable -> {
+            FeatureSupportResult(
+              responseCode = BillingResponseCode.SERVICE_UNAVAILABLE,
             )
           }
         }
