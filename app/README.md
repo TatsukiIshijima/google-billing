@@ -14,4 +14,4 @@ This is a sample app for Google Play Billing Library wrapper with Coroutine.
 ## ScreenRecord
 | Subscription | In-App (Consumable Item) |
 |:--:|:---:|
-| <img src="screenrecord/subscription.gif" width="300"/> | <img src="screenrecord/in_app.gif" width=300/> |
+| <img src="screenrecord/subscription.gif"/> | <img src="screenrecord/in_app.gif"/> |
