@@ -7,6 +7,9 @@ import java.util.UUID
 
 data class FakePurchase(
   val products: List<String>,
+  val quantity: Int,
+  val purchaseTime: Long,
+  val developerPayload: String,
   val purchaseToken: String,
   val signature: String,
   @PurchaseState val purchaseState: Int,
@@ -16,6 +19,9 @@ data class FakePurchase(
   fun toReal(): Purchase {
     val jsonPurchaseInfo = JSONObject().apply {
       put("productId", products.first())
+      put("quantity", quantity)
+      put("purchaseTime", purchaseTime)
+      put("developerPayload", developerPayload)
       put("purchaseToken", purchaseToken)
       put("purchaseState", purchaseState)
       put("acknowledged", isAcknowledged)
@@ -26,6 +32,9 @@ data class FakePurchase(
   companion object {
     fun create(
       products: List<String> = listOf("productId"),
+      quantity: Int = 1,
+      purchaseTime: Long = 1695038424198,
+      developerPayload: String = "developerPayload",
       purchaseToken: String = UUID.randomUUID().toString(),
       signature: String = "signature",
       @PurchaseState purchaseState: Int = PurchaseState.PURCHASED,
@@ -33,6 +42,9 @@ data class FakePurchase(
     ): FakePurchase {
       return FakePurchase(
         products = products,
+        quantity = quantity,
+        purchaseTime = purchaseTime,
+        developerPayload = developerPayload,
         purchaseToken = purchaseToken,
         signature = signature,
         purchaseState = purchaseState,
