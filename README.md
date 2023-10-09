@@ -27,7 +27,7 @@ dependencies {
     implementation("com.github.TatsukiIshijima.google-billing:core:$version")
     implementation("com.github.TatsukiIshijima.google-billing:feature:$version")
     // option
-    // testImplementation("com.github.TatsukiIshijima.google-billing:feature:$version")
+    // testImplementation("com.github.TatsukiIshijima.google-billing:fake:$version")
 }
  ```
 
@@ -133,7 +133,3 @@ To build in a local environment, execute the following command in project direct
 ```shell
 ./gradlew :fake:publishToMavenLocal
 ```
-
-## Sample App
-### Setup
-### ScreenShot
