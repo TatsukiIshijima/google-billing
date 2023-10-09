@@ -53,3 +53,14 @@ data class FakePurchase(
     }
   }
 }
+
+fun FakePurchase.toFakePurchaseHistoryRecord(): FakePurchaseHistoryRecord {
+  return FakePurchaseHistoryRecord(
+    products = products,
+    quantity = quantity,
+    purchaseTime = purchaseTime,
+    developerPayload = developerPayload,
+    purchaseToken = purchaseToken,
+    signature = signature,
+  )
+}
