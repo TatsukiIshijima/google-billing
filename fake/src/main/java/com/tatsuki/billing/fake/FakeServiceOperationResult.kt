@@ -160,11 +160,24 @@ sealed interface FakeServiceOperationResult {
     companion object {
       fun create(fakeServiceStatus: FakeServiceStatus): UpdatePurchasesResult {
         return when (fakeServiceStatus) {
-          is FakeServiceStatus.Available -> {
+          is FakeServiceStatus.Available.Subscription -> {
             UpdatePurchasesResult(
               responseCode = BillingResponseCode.OK,
               purchases = listOf(
-                FakePurchase.create()
+                FakePurchase.create(
+                  products = listOf(Consts.SUBSCRIPTION_PRODUCT_ID),
+                )
+              )
+            )
+          }
+
+          is FakeServiceStatus.Available.InApp -> {
+            UpdatePurchasesResult(
+              responseCode = BillingResponseCode.OK,
+              purchases = listOf(
+                FakePurchase.create(
+                  products = listOf(Consts.IN_APP_PRODUCT_ID),
+                )
               )
             )
           }
@@ -180,6 +193,9 @@ sealed interface FakeServiceOperationResult {
     }
   }
 
+  /**
+   * Result of acknowledge process.
+   */
   data class AcknowledgeResult(
     override val responseCode: Int,
   ) : FakeServiceOperationResult {
@@ -241,6 +257,9 @@ sealed interface FakeServiceOperationResult {
     }
   }
 
+  /**
+   * Result of feature support.
+   */
   data class FeatureSupportResult(
     @BillingResponseCode override val responseCode: Int
   ) : FakeServiceOperationResult {
