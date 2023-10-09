@@ -1,258 +1,147 @@
 package com.tatsuki.billing.feature
 
-import com.tatsuki.billing.feature.GoogleBillingServiceImpl
+import android.app.Activity
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.billingclient.api.Purchase
+import com.tatsuki.billing.TestActivity
+import com.tatsuki.billing.fake.Consts
+import com.tatsuki.billing.fake.FakeBillingClientFactory
+import com.tatsuki.billing.fake.FakeGoogleBillingClient
+import com.tatsuki.billing.fake.FakeServiceStatus
 import com.tatsuki.billing.feature.listener.ConnectionStateListener
+import com.tatsuki.billing.feature.listener.PurchasesListener
 import com.tatsuki.billing.feature.model.Product
 import com.tatsuki.billing.feature.model.ProductId
 import com.tatsuki.billing.feature.model.type.ProductType
-import com.tatsuki.billing.feature.model.type.ConnectionState
-import com.tatsuki.billing.feature.pattern.AcknowledgePattern
-import com.tatsuki.billing.feature.pattern.ConnectionPattern
-import com.tatsuki.billing.feature.pattern.ConsumePattern
-import com.tatsuki.billing.feature.pattern.QueryProductDetailsPattern
-import com.tatsuki.billing.feature.pattern.QueryPurchaseHistoryPattern
-import com.tatsuki.billing.feature.pattern.QueryPurchasesPattern
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.lang.Exception
+import org.junit.runner.RunWith
+import org.robolectric.Robolectric
+import java.lang.ref.WeakReference
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(AndroidJUnit4::class)
 class GoogleBillingServiceTest {
 
-  private lateinit var fakeGoogleBillingClient: FakeGoogleBillingClientImpl
+  private lateinit var fakeGoogleBillingClient: FakeGoogleBillingClient
   private lateinit var googleBillingService: GoogleBillingServiceImpl
+  private lateinit var testActivity: Activity
 
   @Before
   fun setup() {
-    val googleBillingClientFactory = FakeGoogleBillingClientFactoryImpl()
-    googleBillingService = GoogleBillingServiceImpl(googleBillingClientFactory)
+    val fakeBillingClientFactory = FakeBillingClientFactory()
+    googleBillingService = GoogleBillingServiceImpl(
+      googleBillingFactory = fakeBillingClientFactory,
+      connectionStateListener = ConnectionStateListener,
+      purchasesListener = PurchasesListener,
+    )
 
-    fakeGoogleBillingClient = googleBillingClientFactory.fakeGoogleBillingClient
-    fakeGoogleBillingClient.connectionCallCounter.reset()
+    fakeGoogleBillingClient = fakeBillingClientFactory.fakeGoogleBillingClient
+    testActivity = Robolectric.buildActivity(TestActivity::class.java).create().get()
   }
 
+  /**
+   * Test of subscription purchase flow.
+   */
   @Test
-  fun callConnect_returnConnectedWhenNotConnectedYet() = runTest {
-    fakeGoogleBillingClient.setup(ConnectionPattern.Connect.NotConnectedYet())
+  fun purchaseSubscription() = runTest {
+    fakeGoogleBillingClient.setup(FakeServiceStatus.Available.Subscription)
 
-    val connectionTask = async { googleBillingService.connect() }
-    advanceUntilIdle()
+    // Connect to google play store app.
+    googleBillingService.connect()
+    assert(fakeGoogleBillingClient.isReady)
 
-    assert(ConnectionStateListener.connectionRequestId != null)
-    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.size == 1)
-
-    fakeGoogleBillingClient.onBillingSetupFinished()
-    val connectionState = connectionTask.await()
-
-    assert(connectionState == ConnectionState.CONNECTED)
-    assert(fakeGoogleBillingClient.connectionCallCounter.connectCallCount == 1)
-    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.isEmpty())
-    assert(ConnectionStateListener.connectionRequestId == null)
-  }
-
-  @Test
-  fun callConnect_returnConnectedWhenAlreadyConnected() = runTest {
-    fakeGoogleBillingClient.setup(ConnectionPattern.Connect.AlreadyConnected())
-
-    val connectionState = googleBillingService.connect()
-
-    advanceUntilIdle()
-
-    assert(connectionState == ConnectionState.CONNECTED)
-    assert(fakeGoogleBillingClient.connectionCallCounter.connectCallCount == 0)
-  }
-
-  @Test
-  fun callConnect_returnExceptionWhenServiceUnavailable() = runTest {
-    fakeGoogleBillingClient.setup(ConnectionPattern.Connect.ServiceUnavailable())
-
-    val connectionTask = async {
-      runCatching {
-        googleBillingService.connect()
-      }
-    }
-    advanceUntilIdle()
-
-    assert(ConnectionStateListener.connectionRequestId != null)
-    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.size == 1)
-
-    fakeGoogleBillingClient.onBillingSetupFinished()
-    val actual = connectionTask.await().exceptionOrNull()
-
-    assert(actual is GoogleBillingServiceException.ServiceUnavailableException)
-    assert(fakeGoogleBillingClient.connectionCallCounter.connectCallCount == 1)
-    assert(ConnectionStateListener.onBillingServiceConnectionListenerMap.isEmpty())
-    assert(ConnectionStateListener.connectionRequestId == null)
-
-  }
-
-  @Test
-  fun callDisconnect_returnDisconnectedWhenNotDisconnectedYet() {
-    fakeGoogleBillingClient.setup(ConnectionPattern.Disconnect.NotDisConnectedYet())
-
-    googleBillingService.disconnect()
-
-    assert(fakeGoogleBillingClient.connectionCallCounter.disconnectCallCount == 1)
-  }
-
-  @Test
-  fun callDisconnect_returnDisconnectedWhenAlreadyDisconnected() {
-    fakeGoogleBillingClient.setup(ConnectionPattern.Disconnect.AlreadyDisconnected())
-
-    googleBillingService.disconnect()
-
-    assert(fakeGoogleBillingClient.connectionCallCounter.disconnectCallCount == 0)
-  }
-
-  @Test
-  fun callQueryProductDetails_returnProductDetailsListWhenSuccess() = runTest {
-    fakeGoogleBillingClient.setup(QueryProductDetailsPattern.Success())
-
-    val task = async {
-      googleBillingService.queryProductDetails(
-        products = listOf(
-          Product(
-            id = ProductId("productId"),
-            productType = ProductType.InApp()
-          )
-        )
+    // Query product details defined in google play console based on product type.
+    val productDetails = googleBillingService.queryProductDetails(
+      products = listOf(
+        Product(
+          id = ProductId(Consts.SUBSCRIPTION_PRODUCT_ID),
+          productType = ProductType.Subscription(),
+        ),
       )
-    }
+    )
+    assert(productDetails.size == 1)
 
-    val result = task.await()
-    assert(result !is Exception)
+    // Select product details to purchase.
+    val selectedProductDetails = productDetails.first()
+    val offerToken = selectedProductDetails.subscriptionOfferDetails?.first()?.offerToken ?: ""
+
+    // Execute purchase subscription.
+    val purchaseSubscription = googleBillingService.purchaseSubscription(
+      productDetails = selectedProductDetails,
+      offerToken = offerToken,
+      activityRef = WeakReference(testActivity)
+    ).first()
+    assert(purchaseSubscription.products.first() == Consts.SUBSCRIPTION_PRODUCT_ID)
+    assert(purchaseSubscription.purchaseState == Purchase.PurchaseState.PURCHASED)
+    assert(!purchaseSubscription.isAcknowledged)
+
+    // Fetch purchase to acknowledge.
+    val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
+    val purchaseHistoryNotYetAcknowledged = googleBillingService.queryPurchaseHistory(ProductType.Subscription())
+    assert(purchases.size == 1)
+    assert(purchaseHistoryNotYetAcknowledged.size == 1)
+
+    // Acknowledge purchase.
+    googleBillingService.acknowledgePurchase(purchaseSubscription.purchaseToken)
+    val acknowledgedPurchases = googleBillingService.queryPurchases(ProductType.Subscription())
+    val purchaseHistoryAcknowledged = googleBillingService.queryPurchaseHistory(ProductType.Subscription())
+    assert(acknowledgedPurchases.isEmpty())
+    assert(purchaseHistoryAcknowledged.size == 1)
+
+    // Disconnect from google play store app.
+    googleBillingService.disconnect()
+    assert(!fakeGoogleBillingClient.isReady)
   }
 
+  /**
+   * Test of in-app (consumable item) purchase flow.
+   */
   @Test
-  fun callQueryProductDetails_returnExceptionWhenError() = runTest {
-    fakeGoogleBillingClient.setup(QueryProductDetailsPattern.Error())
+  fun purchaseInApp() = runTest {
+    fakeGoogleBillingClient.setup(FakeServiceStatus.Available.InApp)
 
-    val task = async {
-      runCatching {
-        googleBillingService.queryProductDetails(
-          products = listOf(
-            Product(
-              id = ProductId("productId"),
-              productType = ProductType.InApp()
-            )
-          )
-        )
-      }
-    }
+    // Connect to google play store app.
+    googleBillingService.connect()
+    assert(fakeGoogleBillingClient.isReady)
 
-    val result = task.await().exceptionOrNull()
-    assert(result is GoogleBillingServiceException.ErrorException)
-  }
+    // Query product details defined in google play console based on product type.
+    val productDetails = googleBillingService.queryProductDetails(
+      products = listOf(
+        Product(
+          id = ProductId(Consts.IN_APP_PRODUCT_ID),
+          productType = ProductType.InApp(),
+        ),
+      )
+    )
+    assert(productDetails.size == 1)
 
-  @Test
-  fun callQueryPurchaseHistory_returnHistoryRecordListWhenSuccess() = runTest {
-    fakeGoogleBillingClient.setup(QueryPurchaseHistoryPattern.Success())
+    // Select product details to purchase.
+    val selectedProductDetails = productDetails.first()
 
-    val task = async {
-      googleBillingService.queryPurchaseHistory(ProductType.Subscription())
-    }
+    // Execute purchase subscription.
+    val purchaseInApp = googleBillingService.purchaseConsumableProduct(
+      productDetails = selectedProductDetails,
+      activityRef = WeakReference(testActivity)
+    )
+    assert(purchaseInApp?.first()?.products?.first() == Consts.IN_APP_PRODUCT_ID)
+    assert(purchaseInApp?.first()?.purchaseState == Purchase.PurchaseState.PURCHASED)
 
-    val result = task.await()
-    assert(result.isNotEmpty())
-  }
+    // Fetch purchase to consume.
+    val purchases = googleBillingService.queryPurchases(ProductType.InApp())
+    val purchaseHistoryNotYetConsumed = googleBillingService.queryPurchaseHistory(ProductType.InApp())
+    assert(purchases.size == 1)
+    assert(purchaseHistoryNotYetConsumed.size == 1)
 
-  @Test
-  fun callQueryPurchaseHistory_returnHistoryRecordListWhenFailure() = runTest {
-    fakeGoogleBillingClient.setup(QueryPurchaseHistoryPattern.Error())
+    // Consume purchase.
+    googleBillingService.consumePurchase(purchaseInApp?.first()?.purchaseToken ?: "")
+    val consumedPurchases = googleBillingService.queryPurchases(ProductType.InApp())
+    val purchaseHistoryConsumed = googleBillingService.queryPurchaseHistory(ProductType.InApp())
+    assert(consumedPurchases.isEmpty())
+    assert(purchaseHistoryConsumed.size == 1)
 
-    val task = async {
-      runCatching {
-        googleBillingService.queryPurchaseHistory(ProductType.Subscription())
-      }
-    }
-
-    val result = task.await().exceptionOrNull()
-    assert(result is GoogleBillingServiceException.ErrorException)
-  }
-
-  @Test
-  fun callQueryPurchases_returnPurchaseListWhenSuccess() = runTest {
-    fakeGoogleBillingClient.setup(QueryPurchasesPattern.Success())
-
-    val task = async {
-      googleBillingService.queryPurchases(ProductType.Subscription())
-    }
-
-    val result = task.await()
-    assert(result.isNotEmpty())
-  }
-
-  @Test
-  fun callQueryPurchases_returnExceptionWhenServiceUnavailable() = runTest {
-    fakeGoogleBillingClient.setup(QueryPurchasesPattern.ServiceUnavailableError())
-
-    val task = async {
-      runCatching {
-        googleBillingService.queryPurchases(ProductType.Subscription())
-      }
-    }
-
-    val result = task.await().exceptionOrNull()
-    assert(result is GoogleBillingServiceException.ServiceUnavailableException)
-  }
-
-  @Test
-  fun callConsume_noExceptionWhenSuccess() = runTest {
-    fakeGoogleBillingClient.setup(ConsumePattern.Success())
-
-    val task = async {
-      runCatching {
-        googleBillingService.consumePurchase("purchaseToken")
-      }
-    }
-
-    val result = task.await().exceptionOrNull()
-    assert(result == null)
-  }
-
-  @Test
-  fun callConsume_exceptionWhenError() = runTest {
-    fakeGoogleBillingClient.setup(ConsumePattern.Error())
-
-    val task = async {
-      runCatching {
-        googleBillingService.consumePurchase("")
-      }
-    }
-
-    val result = task.await().exceptionOrNull()
-    assert(result is GoogleBillingServiceException.ErrorException)
-  }
-
-  @Test
-  fun callAcknowledge_noExceptionWhenSuccess() = runTest {
-    fakeGoogleBillingClient.setup(AcknowledgePattern.Success())
-
-    val task = async {
-      runCatching {
-        googleBillingService.acknowledgePurchase("purchaseToken")
-      }
-    }
-
-    val result = task.await().exceptionOrNull()
-    assert(result == null)
-  }
-
-  @Test
-  fun callAcknowledge_exceptionWhenError() = runTest {
-    fakeGoogleBillingClient.setup(AcknowledgePattern.Error())
-
-    val task = async {
-      runCatching {
-        googleBillingService.acknowledgePurchase("")
-      }
-    }
-
-    val result = task.await().exceptionOrNull()
-    assert(result is GoogleBillingServiceException.ErrorException)
+    // Disconnect from google play store app.
+    googleBillingService.disconnect()
+    assert(!fakeGoogleBillingClient.isReady)
   }
 }
