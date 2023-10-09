@@ -1,12 +1,12 @@
 package com.tatsuki.inappbilling.module
 
 import android.content.Context
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.tatsuki.google.billing.GoogleBillingClientFactory
-import com.tatsuki.google.billing.GoogleBillingClientFactoryImpl
-import com.tatsuki.google.billing.GoogleBillingService
-import com.tatsuki.google.billing.GoogleBillingServiceImpl
-import com.tatsuki.google.billing.listener.PurchasesListener
+import com.tatsuki.billing.core.GoogleBillingClientFactory
+import com.tatsuki.billing.feature.GoogleBillingClientFactoryImpl
+import com.tatsuki.billing.feature.GoogleBillingService
+import com.tatsuki.billing.feature.GoogleBillingServiceImpl
+import com.tatsuki.billing.feature.listener.ConnectionStateListener
+import com.tatsuki.billing.feature.listener.PurchasesListener
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,27 +20,40 @@ object BillingClientModule {
 
   @Provides
   @Singleton
-  fun providePurchasesUpdatedListener(): PurchasesUpdatedListener {
-    return PurchasesListener
-  }
-
-  @Provides
-  @Singleton
   fun provideGoogleBillingService(
-    googleBillingClientFactory: GoogleBillingClientFactory
+    googleBillingClientFactory: GoogleBillingClientFactory,
+    connectionStateListener: ConnectionStateListener,
+    purchasesListener: PurchasesListener,
   ): GoogleBillingService {
-    return GoogleBillingServiceImpl(googleBillingClientFactory)
+    return GoogleBillingServiceImpl(
+      googleBillingFactory = googleBillingClientFactory,
+      connectionStateListener = connectionStateListener,
+      purchasesListener = purchasesListener
+    )
   }
 
   @Provides
   @Singleton
   fun provideGoogleBillingClientFactory(
     @ApplicationContext context: Context,
-    purchasesListener: PurchasesUpdatedListener
   ): GoogleBillingClientFactory {
-    return GoogleBillingClientFactoryImpl(
-      context,
-      purchasesListener
-    )
+    return GoogleBillingClientFactoryImpl(context)
+  }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object BillingClientListenerModule {
+
+  @Provides
+  @Singleton
+  fun provideConnectionListener(): ConnectionStateListener {
+    return ConnectionStateListener
+  }
+
+  @Provides
+  @Singleton
+  fun providePurchasesListener(): PurchasesListener {
+    return PurchasesListener
   }
 }
