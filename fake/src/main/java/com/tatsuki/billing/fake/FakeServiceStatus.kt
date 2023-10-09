@@ -2,7 +2,11 @@ package com.tatsuki.billing.fake
 
 sealed interface FakeServiceStatus {
 
-  object Available : FakeServiceStatus
+  sealed interface Available : FakeServiceStatus {
+    object Subscription : Available
+
+    object InApp : Available
+  }
 
   object UnAvailable : FakeServiceStatus
 }

@@ -39,7 +39,20 @@ sealed interface FakeServiceOperationResult {
     companion object {
       fun create(fakeServiceStatus: FakeServiceStatus): QueryProductDetailsResult {
         return when (fakeServiceStatus) {
-          FakeServiceStatus.Available -> {
+          is FakeServiceStatus.Available.Subscription -> {
+            QueryProductDetailsResult(
+              responseCode = BillingResponseCode.OK,
+              productDetailsList = listOf(
+                FakeProductDetails.create(
+                  productId = Consts.SUBSCRIPTION_PRODUCT_ID,
+                  type = BillingClient.ProductType.SUBS,
+                  oneTimePurchaseOfferDetails = null
+                )
+              )
+            )
+          }
+
+          is FakeServiceStatus.Available.InApp -> {
             QueryProductDetailsResult(
               responseCode = BillingResponseCode.OK,
               productDetailsList = listOf(
@@ -48,11 +61,6 @@ sealed interface FakeServiceOperationResult {
                   type = BillingClient.ProductType.INAPP,
                   subscriptionOfferDetails = null,
                 ),
-                FakeProductDetails.create(
-                  productId = Consts.SUBSCRIPTION_PRODUCT_ID,
-                  type = BillingClient.ProductType.SUBS,
-                  oneTimePurchaseOfferDetails = null
-                )
               )
             )
           }
@@ -179,9 +187,15 @@ sealed interface FakeServiceOperationResult {
     companion object {
       fun create(fakeServiceStatus: FakeServiceStatus): AcknowledgeResult {
         return when (fakeServiceStatus) {
-          is FakeServiceStatus.Available -> {
+          is FakeServiceStatus.Available.Subscription -> {
             AcknowledgeResult(
               responseCode = BillingResponseCode.OK,
+            )
+          }
+
+          is FakeServiceStatus.Available.InApp -> {
+            AcknowledgeResult(
+              responseCode = BillingResponseCode.DEVELOPER_ERROR,
             )
           }
 
@@ -205,7 +219,13 @@ sealed interface FakeServiceOperationResult {
     companion object {
       fun create(fakeServiceStatus: FakeServiceStatus): ConsumeResult {
         return when (fakeServiceStatus) {
-          is FakeServiceStatus.Available -> {
+          is FakeServiceStatus.Available.Subscription -> {
+            ConsumeResult(
+              responseCode = BillingResponseCode.DEVELOPER_ERROR,
+            )
+          }
+
+          is FakeServiceStatus.Available.InApp -> {
             ConsumeResult(
               responseCode = BillingResponseCode.OK,
             )
