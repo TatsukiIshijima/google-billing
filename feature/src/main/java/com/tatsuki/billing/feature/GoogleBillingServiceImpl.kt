@@ -2,10 +2,8 @@ package com.tatsuki.billing.feature
 
 import android.app.Activity
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import com.android.billingclient.api.AccountIdentifiers
 import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
@@ -34,16 +32,16 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class GoogleBillingServiceImpl(
+  enablePendingPurchase: Boolean = true,
   googleBillingFactory: GoogleBillingClientFactory,
+  private val connectionStateListener: ConnectionStateListener,
+  private val purchasesListener: PurchasesListener,
 ) : GoogleBillingService {
 
-  private val billingClient = googleBillingFactory.create()
-
-  @VisibleForTesting
-  val connectionListener = ConnectionStateListener
-
-  @VisibleForTesting
-  val purchasesListener = PurchasesListener
+  private val billingClient = googleBillingFactory.create(
+    enablePendingPurchases = enablePendingPurchase,
+    purchasesUpdatedListener = purchasesListener
+  )
 
   override suspend fun connect(): ConnectionState {
     if (billingClient.isReady) {
@@ -54,12 +52,12 @@ class GoogleBillingServiceImpl(
 
       val requestId = RequestId().value
 
-      connectionListener.addOnBillingServiceConnectionListener(
+      connectionStateListener.addOnBillingServiceConnectionListener(
         requestId = requestId,
         listener = object : OnBillingServiceConnectionListener {
           override fun onBillingSetupFinished(billingResult: BillingResult) {
-            connectionListener.removeOnBillingServiceConnectionListener(requestId)
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            connectionStateListener.removeOnBillingServiceConnectionListener(requestId)
+            if (billingResult.responseCode == BillingResponseCode.OK) {
               continuation.resume(ConnectionState.CONNECTED)
             } else {
               continuation.resumeWithException(billingResult.responseCode.toException())
@@ -67,7 +65,7 @@ class GoogleBillingServiceImpl(
           }
 
           override fun onBillingServiceDisconnected() {
-            connectionListener.removeOnBillingServiceConnectionListener(requestId)
+            connectionStateListener.removeOnBillingServiceConnectionListener(requestId)
             continuation.resume(ConnectionState.DISCONNECTED)
           }
         }
@@ -77,7 +75,7 @@ class GoogleBillingServiceImpl(
         endConnectionIfReady()
       }
 
-      billingClient.connect(connectionListener)
+      billingClient.connect(connectionStateListener)
     }
   }
 
@@ -99,7 +97,7 @@ class GoogleBillingServiceImpl(
       .setProductList(products.map { it.toQueryProduct() })
       .build()
     val queryProductDetailsTask = billingClient.queryProductDetails(queryProductDetailsParams)
-    return if (queryProductDetailsTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+    return if (queryProductDetailsTask.billingResult.responseCode == BillingResponseCode.OK) {
       queryProductDetailsTask.productDetailsList ?: emptyList()
     } else {
       throw queryProductDetailsTask.billingResult.responseCode.toException()
@@ -111,7 +109,7 @@ class GoogleBillingServiceImpl(
       .setProductType(productType.value)
       .build()
     val queryPurchaseHistoryTask = billingClient.queryPurchaseHistory(queryPurchaseHistoryParams)
-    return if (queryPurchaseHistoryTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+    return if (queryPurchaseHistoryTask.billingResult.responseCode == BillingResponseCode.OK) {
       queryPurchaseHistoryTask.purchaseHistoryRecordList ?: emptyList()
     } else {
       throw queryPurchaseHistoryTask.billingResult.responseCode.toException()
@@ -123,7 +121,7 @@ class GoogleBillingServiceImpl(
       .setProductType(productType.value)
       .build()
     val queryPurchaseTask = billingClient.queryPurchases(queryPurchasesParams)
-    return if (queryPurchaseTask.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+    return if (queryPurchaseTask.billingResult.responseCode == BillingResponseCode.OK) {
       queryPurchaseTask.purchasesList
     } else {
       throw queryPurchaseTask.billingResult.responseCode.toException()
@@ -201,7 +199,10 @@ class GoogleBillingServiceImpl(
       null
     }
     if (subscriptionUpdateParams != null) {
-      Log.d("GoogleBillingService", "Launch update subscription billing flow. replaceMode=$subscriptionReplacementMode")
+      Log.d(
+        "GoogleBillingService",
+        "Launch update subscription billing flow. replaceMode=$subscriptionReplacementMode"
+      )
       billingFlowParams.setSubscriptionUpdateParams(subscriptionUpdateParams)
     } else {
       Log.d("GoogleBillingService", "Launch new subscription billing flow.")

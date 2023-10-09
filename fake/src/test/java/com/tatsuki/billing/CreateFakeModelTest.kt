@@ -5,6 +5,7 @@ import com.tatsuki.billing.fake.model.FakePricingPhase
 import com.tatsuki.billing.fake.model.FakePricingPhases
 import com.tatsuki.billing.fake.model.FakeProductDetails
 import com.tatsuki.billing.fake.model.FakePurchase
+import com.tatsuki.billing.fake.model.FakePurchaseHistoryRecord
 import com.tatsuki.billing.fake.model.FakeSubscriptionOfferDetails
 import org.junit.Test
 
@@ -55,7 +56,24 @@ class CreateFakeModelTest {
     val fakePurchase = FakePurchase.create()
     val realPurchase = fakePurchase.toReal()
     assert(fakePurchase.products.first() == realPurchase.products.first())
+    assert(fakePurchase.quantity == realPurchase.quantity)
+    assert(fakePurchase.purchaseTime == realPurchase.purchaseTime)
+    assert(fakePurchase.developerPayload == realPurchase.developerPayload)
     assert(fakePurchase.purchaseToken == realPurchase.purchaseToken)
     assert(fakePurchase.signature == realPurchase.signature)
+    assert(fakePurchase.purchaseState == realPurchase.purchaseState)
+    assert(fakePurchase.isAcknowledged == realPurchase.isAcknowledged)
+  }
+
+  @Test
+  fun create_fake_purchase_history_record() {
+    val fakePurchaseHistoryRecord = FakePurchaseHistoryRecord.create()
+    val realPurchaseHistoryRecord = fakePurchaseHistoryRecord.toReal()
+    assert(fakePurchaseHistoryRecord.products.first() == realPurchaseHistoryRecord.products.first())
+    assert(fakePurchaseHistoryRecord.quantity == realPurchaseHistoryRecord.quantity)
+    assert(fakePurchaseHistoryRecord.purchaseTime == realPurchaseHistoryRecord.purchaseTime)
+    assert(fakePurchaseHistoryRecord.developerPayload == realPurchaseHistoryRecord.developerPayload)
+    assert(fakePurchaseHistoryRecord.purchaseToken == realPurchaseHistoryRecord.purchaseToken)
+    assert(fakePurchaseHistoryRecord.signature == realPurchaseHistoryRecord.signature)
   }
 }
