@@ -114,7 +114,7 @@ class GoogleBillingServiceTest {
     // Select product details to purchase.
     val selectedProductDetails = productDetails.first()
 
-    // Execute purchase subscription.
+    // Execute purchase in-app.
     val purchaseInApp = googleBillingService.purchaseConsumableProduct(
       productDetails = selectedProductDetails,
       activityRef = WeakReference(testActivity)
