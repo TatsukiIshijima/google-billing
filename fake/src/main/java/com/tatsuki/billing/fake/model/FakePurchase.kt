@@ -14,6 +14,7 @@ data class FakePurchase(
   val signature: String,
   @PurchaseState val purchaseState: Int,
   val isAcknowledged: Boolean,
+  val isAutoRenewing: Boolean,
 ) {
 
   fun toReal(): Purchase {
@@ -25,6 +26,7 @@ data class FakePurchase(
       put("purchaseToken", purchaseToken)
       put("purchaseState", purchaseState)
       put("acknowledged", isAcknowledged)
+      put("autoRenewing", isAutoRenewing)
     }.toString()
     return Purchase(jsonPurchaseInfo, signature)
   }
@@ -39,6 +41,7 @@ data class FakePurchase(
       signature: String = "signature",
       @PurchaseState purchaseState: Int = PurchaseState.PURCHASED,
       isAcknowledged: Boolean = false,
+      isAutoRenewing: Boolean = true,
     ): FakePurchase {
       return FakePurchase(
         products = products,
@@ -49,6 +52,7 @@ data class FakePurchase(
         signature = signature,
         purchaseState = purchaseState,
         isAcknowledged = isAcknowledged,
+        isAutoRenewing = isAutoRenewing,
       )
     }
   }
