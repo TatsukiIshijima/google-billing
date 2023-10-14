@@ -76,18 +76,13 @@ class GoogleBillingServiceTest {
     assert(purchaseSubscription.purchaseState == Purchase.PurchaseState.PURCHASED)
     assert(!purchaseSubscription.isAcknowledged)
 
-    // Fetch purchase to acknowledge.
-    val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
-    val purchaseHistoryNotYetAcknowledged = googleBillingService.queryPurchaseHistory(ProductType.Subscription())
-    assert(purchases.size == 1)
-    assert(purchaseHistoryNotYetAcknowledged.size == 1)
-
     // Acknowledge purchase.
     googleBillingService.acknowledgePurchase(purchaseSubscription.purchaseToken)
-    val acknowledgedPurchases = googleBillingService.queryPurchases(ProductType.Subscription())
-    val purchaseHistoryAcknowledged = googleBillingService.queryPurchaseHistory(ProductType.Subscription())
-    assert(acknowledgedPurchases.isEmpty())
-    assert(purchaseHistoryAcknowledged.size == 1)
+    val purchases = googleBillingService.queryPurchases(ProductType.Subscription())
+    val purchaseHistory = googleBillingService.queryPurchaseHistory(ProductType.Subscription())
+    assert(purchases.size == 1)
+    assert(purchases.first().isAcknowledged)
+    assert(purchaseHistory.size == 1)
 
     // Disconnect from google play store app.
     googleBillingService.disconnect()
@@ -119,7 +114,7 @@ class GoogleBillingServiceTest {
     // Select product details to purchase.
     val selectedProductDetails = productDetails.first()
 
-    // Execute purchase subscription.
+    // Execute purchase in-app.
     val purchaseInApp = googleBillingService.purchaseConsumableProduct(
       productDetails = selectedProductDetails,
       activityRef = WeakReference(testActivity)

@@ -98,10 +98,9 @@ class FakeGoogleBillingClient(
       FakeServiceOperationResults.create(status).queryPurchaseHistoryResult
     val purchaseHistoryRecords =
       if (queryPurchaseHistoryResult.responseCode == BillingResponseCode.OK) {
-        val allPurchases = (purchases + recordPurchases)
         when (status) {
           FakeServiceStatus.Available.InApp -> {
-            allPurchases
+            recordPurchases
               // Purchase type cannot be determined from QueryPurchaseHistoryParams.
               // So it is filtered by product id.
               .filter { it.products.contains(Consts.IN_APP_PRODUCT_ID) }
@@ -110,7 +109,7 @@ class FakeGoogleBillingClient(
           }
 
           FakeServiceStatus.Available.Subscription -> {
-            allPurchases
+            recordPurchases
               // Purchase type cannot be determined from QueryPurchaseHistoryParams.
               // So it is filtered by product id.
               .filter { it.products.contains(Consts.SUBSCRIPTION_PRODUCT_ID) }
@@ -156,6 +155,8 @@ class FakeGoogleBillingClient(
             // Purchase type cannot be determined from QueryPurchaseHistoryParams.
             // So it is filtered by product id.
             .filter { it.products.contains(Consts.SUBSCRIPTION_PRODUCT_ID) }
+            // Filter active subscription.（擬似的に再現している）
+            .filter { it.isAutoRenewing }
             .map { it.toReal() }
         }
 
@@ -182,8 +183,11 @@ class FakeGoogleBillingClient(
     val updatePurchasesResult = FakeServiceOperationResults.create(status).updatePurchasesResult
 
     if (launchBillingFlowResult.responseCode == BillingResponseCode.OK) {
+      // TODO: support update subscription (define new fake status.)
       // Return purchases only if successful launch billing flow.
       purchases.addAll(updatePurchasesResult.purchases)
+      recordPurchases.addAll(updatePurchasesResult.purchases)
+
       purchasesUpdatedListener.onPurchasesUpdated(
         BillingResult.newBuilder()
           .setResponseCode(updatePurchasesResult.responseCode)
@@ -216,7 +220,6 @@ class FakeGoogleBillingClient(
     if (consumeResult.responseCode == BillingResponseCode.OK) {
       // Remove purchase from cache in google play store app if successful consume.
       purchases.remove(shouldConsumePurchase)
-      recordPurchases.add(shouldConsumePurchase)
     }
     return ConsumeResult(
       billingResult = BillingResult.newBuilder()
@@ -238,12 +241,12 @@ class FakeGoogleBillingClient(
         .build()
     val acknowledgeResult = FakeServiceOperationResults.create(status).acknowledgeResult
     if (acknowledgeResult.responseCode == BillingResponseCode.OK) {
-      // Remove purchase from cache in google play store app if successful acknowledge.
-      purchases.remove(shouldAcknowledgePurchase)
+      // Update acknowledge flag if successful acknowledge.
       val acknowledgedPurchase = shouldAcknowledgePurchase.copy(
         isAcknowledged = true
       )
-      recordPurchases.add(acknowledgedPurchase)
+      purchases.remove(shouldAcknowledgePurchase)
+      purchases.add(acknowledgedPurchase)
     }
     return BillingResult.newBuilder()
       .setResponseCode(acknowledgeResult.responseCode)
