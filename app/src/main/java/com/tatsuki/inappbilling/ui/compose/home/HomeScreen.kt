@@ -3,20 +3,13 @@ package com.tatsuki.inappbilling.ui.compose.home
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,12 +18,9 @@ import com.tatsuki.inappbilling.R
 import com.tatsuki.inappbilling.model.OneTimePurchaseOfferDetailUiModel
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
 import com.tatsuki.inappbilling.model.SubscriptionOfferDetailUiModel
-import com.tatsuki.inappbilling.ui.compose.AppDrawerContent
-import com.tatsuki.inappbilling.ui.compose.MenuItem
 import com.tatsuki.inappbilling.ui.compose.inappitem.InAppItemScreen
 import com.tatsuki.inappbilling.ui.compose.subscription.SubscriptionScreen
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
-import kotlinx.coroutines.launch
 
 enum class InAppBillingPage(
   val index: Int,
@@ -45,7 +35,6 @@ enum class InAppBillingPage(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
   modifier: Modifier = Modifier,
@@ -54,64 +43,27 @@ fun HomeScreen(
   onSubscriptionClick: (uiModel: SubscriptionOfferDetailUiModel) -> Unit = { _ -> },
   onInAppItemClick: (uiModel: OneTimePurchaseOfferDetailUiModel) -> Unit = { _ -> },
 ) {
-  val coroutineScope = rememberCoroutineScope()
-  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-  var selectedTabIndex by remember { mutableStateOf(0) }
+  var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-  ModalNavigationDrawer(
-    drawerState = drawerState,
-    drawerContent = {
-      AppDrawerContent(
-        onClickMenuItem = { menuItem ->
-          coroutineScope.launch {
-            when (menuItem) {
-              MenuItem.PURCHASES -> {
-                // TODO: navigation
-              }
-              MenuItem.PURCHASE_HISTORY_RECORDS -> {
-                // TODO: navigation
-              }
-            }
-            drawerState.close()
-          }
-        },
-      )
-    }
-  ) {
-    Scaffold(
-      modifier = modifier,
-      topBar = {
-        HomeTopAppBar(
-          onMenuClick = {
-            coroutineScope.launch {
-              drawerState.open()
-            }
-          }
-        )
-      },
-    ) { innerPadding ->
-      HomeTabScreen(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(innerPadding),
-        selectedTabIndex = selectedTabIndex,
-        onTabClick = { inAppBillingPage ->
-          selectedTabIndex = when (inAppBillingPage) {
-            InAppBillingPage.SUBSCRIPTION -> 0
-            InAppBillingPage.IN_APP_ITEM -> 1
-          }
-        },
-        productDetailsWithSubscriptionList = productDetailsWithSubscriptionList,
-        productDetailsWithInAppItemList = productDetailsWithInAppItemList,
-        onSubscriptionClick = { uiModel ->
-          onSubscriptionClick(uiModel)
-        },
-        onInAppItemClick = { uiModel ->
-          onInAppItemClick(uiModel)
-        },
-      )
-    }
-  }
+  HomeTabScreen(
+    modifier = modifier
+      .fillMaxWidth(),
+    selectedTabIndex = selectedTabIndex,
+    onTabClick = { inAppBillingPage ->
+      selectedTabIndex = when (inAppBillingPage) {
+        InAppBillingPage.SUBSCRIPTION -> 0
+        InAppBillingPage.IN_APP_ITEM -> 1
+      }
+    },
+    productDetailsWithSubscriptionList = productDetailsWithSubscriptionList,
+    productDetailsWithInAppItemList = productDetailsWithInAppItemList,
+    onSubscriptionClick = { uiModel ->
+      onSubscriptionClick(uiModel)
+    },
+    onInAppItemClick = { uiModel ->
+      onInAppItemClick(uiModel)
+    },
+  )
 }
 
 @Preview
