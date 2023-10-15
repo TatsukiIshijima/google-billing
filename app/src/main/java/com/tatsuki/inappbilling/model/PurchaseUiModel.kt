@@ -9,6 +9,7 @@ data class PurchaseUiModel(
   val quantity: Int,
   val purchaseTime: Long,
   val orderId: String?,
+  val isAcknowledged: Boolean,
 ) {
 
   companion object {
@@ -19,6 +20,7 @@ data class PurchaseUiModel(
         quantity = purchase.quantity,
         purchaseTime = purchase.purchaseTime,
         orderId = purchase.orderId,
+        isAcknowledged = purchase.isAcknowledged,
       )
     }
   }
@@ -30,11 +32,14 @@ fun PurchaseUiModel.Companion.fake(
   quantity: Int = 1,
   purchaseTime: Long = 1695038424198,
   orderId: String? = "orderId",
+  isAcknowledged: Boolean = false,
 ): PurchaseUiModel {
   return PurchaseUiModel(
     products = products,
     purchaseState = purchaseState,
     quantity = quantity,
     purchaseTime = purchaseTime,
-    orderId = orderId,)
+    orderId = orderId,
+    isAcknowledged = isAcknowledged,
+  )
 }
