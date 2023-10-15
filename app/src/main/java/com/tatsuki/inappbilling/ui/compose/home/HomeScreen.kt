@@ -26,6 +26,7 @@ import com.tatsuki.inappbilling.model.OneTimePurchaseOfferDetailUiModel
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
 import com.tatsuki.inappbilling.model.SubscriptionOfferDetailUiModel
 import com.tatsuki.inappbilling.ui.compose.AppDrawerContent
+import com.tatsuki.inappbilling.ui.compose.MenuItem
 import com.tatsuki.inappbilling.ui.compose.inappitem.InAppItemScreen
 import com.tatsuki.inappbilling.ui.compose.subscription.SubscriptionScreen
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
@@ -61,8 +62,19 @@ fun HomeScreen(
     drawerState = drawerState,
     drawerContent = {
       AppDrawerContent(
-        onClickPurchases = { /*TODO*/ },
-        onClickPurchaseHistoryRecords = { /*TODO*/ },
+        onClickMenuItem = { menuItem ->
+          coroutineScope.launch {
+            when (menuItem) {
+              MenuItem.PURCHASES -> {
+                // TODO: navigation
+              }
+              MenuItem.PURCHASE_HISTORY_RECORDS -> {
+                // TODO: navigation
+              }
+            }
+            drawerState.close()
+          }
+        },
       )
     }
   ) {
