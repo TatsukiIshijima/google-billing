@@ -10,10 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tatsuki.inappbilling.R
 import com.tatsuki.inappbilling.model.PurchaseHistoryRecordUiModel
 import com.tatsuki.inappbilling.model.fake
+import com.tatsuki.inappbilling.ui.compose.util.HeaderItem
 import com.tatsuki.inappbilling.ui.compose.util.ItemBackground
 
 @Composable
@@ -32,6 +35,9 @@ fun PurchaseHistoryRecordsScreen(
       .padding(12.dp),
     verticalArrangement = Arrangement.spacedBy(12.dp),
   ) {
+    item {
+      HeaderItem(title = stringResource(id = R.string.purchase_history_records_title))
+    }
     items(purchaseHistoryRecords.size) { purchaseHistoryRecordIndex ->
       val purchaseHistoryRecord = purchaseHistoryRecords[purchaseHistoryRecordIndex]
       PurchaseHistoryRecordItem(

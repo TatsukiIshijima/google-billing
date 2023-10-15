@@ -6,4 +6,6 @@
   <string name="menu_item_home">Home</string>
   <string name="menu_item_purchases">Purchases</string>
   <string name="menu_item_purchase_history_records">PurchaseHistoryRecords</string>
+  <string name="purchases_title">Purchases</string>
+  <string name="purchase_history_records_title">PurchaseHistoryRecords</string>
 </resources>

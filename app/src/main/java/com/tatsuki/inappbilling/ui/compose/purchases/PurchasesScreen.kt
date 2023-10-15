@@ -10,11 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tatsuki.billing.feature.model.type.PurchaseState
+import com.tatsuki.inappbilling.R
 import com.tatsuki.inappbilling.model.PurchaseUiModel
 import com.tatsuki.inappbilling.model.fake
+import com.tatsuki.inappbilling.ui.compose.util.HeaderItem
 import com.tatsuki.inappbilling.ui.compose.util.ItemBackground
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 
@@ -34,6 +37,9 @@ fun PurchasesScreen(
       .padding(12.dp),
     verticalArrangement = Arrangement.spacedBy(12.dp),
   ) {
+    item {
+      HeaderItem(title = stringResource(id = R.string.purchases_title))
+    }
     items(purchases.size) { purchaseIndex ->
       val purchase = purchases[purchaseIndex]
       PurchaseItem(
