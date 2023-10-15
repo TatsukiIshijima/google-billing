@@ -47,9 +47,6 @@ dependencies {
 publishing {
   publications {
     register<MavenPublication>("release") {
-//      groupId = "com.github.TatsukiIshijima"
-//      artifactId = project.name
-//      artifactId = rootProject.name
       version = libVersionsProperties["VERSION_NAME"] as String
 
       afterEvaluate {

@@ -11,6 +11,8 @@ class MainViewModel @Inject constructor(
   private val billingClientLifecycle: BillingClientLifecycle
 ) : ViewModel() {
 
+  val purchases = billingClientLifecycle.mutablePurchases.asStateFlow()
+  val purchaseHistoryRecords = billingClientLifecycle.mutablePurchaseHistoryRecords.asStateFlow()
   val productDetailsWithSubscriptionList =
     billingClientLifecycle.mutableProductDetailsWithSubscriptionList.asStateFlow()
   val productDetailsWithInAppItemList =

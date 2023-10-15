@@ -1,5 +1,23 @@
 <resources>
   <string name="app_name">InAppBillingApp</string>
+  <string name="app_menu">Menu</string>
   <string name="subscription_title">Subscription</string>
   <string name="in_app_item_title">InAppItem</string>
+  <string name="menu_item_home">Home</string>
+  <string name="menu_item_purchases">Purchases</string>
+  <string name="menu_item_purchase_history_records">PurchaseHistoryRecords</string>
+  <string name="purchases_title">Purchases</string>
+  <string name="purchase_history_records_title">PurchaseHistoryRecords</string>
+  <string name="productIds_label">ProductIds</string>
+  <string name="productId_label">ProductId</string>
+  <string name="product_type_label">ProductType</string>
+  <string name="purchase_state_label">PurchaseState</string>
+  <string name="purchase_time_label">PurchaseTime</string>
+  <string name="quantity_label">Quantity</string>
+  <string name="order_id_label">OrderId</string>
+  <string name="is_acknowledged_label">IsAcknowledged</string>
+  <string name="base_plan_id_label">BasePlanId</string>
+  <string name="offer_id_label">OfferId</string>
+  <string name="price_label">Price</string>
+  <string name="item_name_label">Name</string>
 </resources>

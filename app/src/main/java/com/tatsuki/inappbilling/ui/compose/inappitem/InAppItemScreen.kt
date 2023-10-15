@@ -5,15 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tatsuki.inappbilling.R
 import com.tatsuki.inappbilling.model.OneTimePurchaseOfferDetailUiModel
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
 import com.tatsuki.inappbilling.ui.compose.util.ItemBackground
+import com.tatsuki.inappbilling.ui.compose.util.PropertyText
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 
 @Composable
@@ -65,22 +65,24 @@ private fun OneTimeOfferDetailsItem(
     modifier = modifier,
     onClick = { onClick(oneTimePurchaseOfferDetailUiModel) }
   ) {
-    Column {
-      Text(
-        text = oneTimePurchaseOfferDetailUiModel.name,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+    Column(
+      verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+      PropertyText(
+        labelId = R.string.item_name_label,
+        text = oneTimePurchaseOfferDetailUiModel.name
       )
-      Text(
-        text = oneTimePurchaseOfferDetailUiModel.productId,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.productId_label,
+        text = oneTimePurchaseOfferDetailUiModel.productId
       )
-      Text(
-        text = oneTimePurchaseOfferDetailUiModel.productType,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.product_type_label,
+        text = oneTimePurchaseOfferDetailUiModel.productType
       )
-      Text(
-        text = oneTimePurchaseOfferDetailUiModel.pricingPhase.formattedPrice,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.price_label,
+        text = oneTimePurchaseOfferDetailUiModel.pricingPhase.formattedPrice
       )
     }
   }
