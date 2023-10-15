@@ -19,4 +19,5 @@
   <string name="base_plan_id_label">BasePlanId</string>
   <string name="offer_id_label">OfferId</string>
   <string name="price_label">Price</string>
+  <string name="item_name_label">Name</string>
 </resources>

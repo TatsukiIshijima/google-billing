@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -19,6 +17,7 @@ import com.tatsuki.inappbilling.model.PurchaseUiModel
 import com.tatsuki.inappbilling.model.fake
 import com.tatsuki.inappbilling.ui.compose.util.HeaderItem
 import com.tatsuki.inappbilling.ui.compose.util.ItemBackground
+import com.tatsuki.inappbilling.ui.compose.util.PropertyText
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 
 @Composable
@@ -59,36 +58,31 @@ private fun PurchaseItem(
   ) {
     Column(
       modifier = modifier.fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-      Text(
-        text = purchase.products.joinToString(separator = ","),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.productIds_label,
+        text = purchase.products.joinToString(separator = ",")
       )
-      Text(
-        text = purchase.purchaseState.toName(),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.purchase_state_label,
+        text = purchase.purchaseState.toName()
       )
-      Text(
-        text = purchase.quantity.toString(),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.quantity_label,
+        text = purchase.quantity.toString()
       )
-      Text(
-        text = purchase.purchaseTime.toString(),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.purchase_time_label,
+        text = purchase.purchaseTime.toString()
       )
-      Text(
-        text = purchase.orderId ?: "-",
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.order_id_label,
+        text = purchase.orderId ?: "-"
       )
-      Text(
-        text = purchase.isAcknowledged.toString(),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.is_acknowledged_label,
+        text = purchase.isAcknowledged.toString()
       )
     }
   }

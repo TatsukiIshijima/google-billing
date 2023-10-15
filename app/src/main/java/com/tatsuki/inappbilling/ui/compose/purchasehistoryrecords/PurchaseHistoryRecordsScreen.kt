@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -18,6 +16,7 @@ import com.tatsuki.inappbilling.model.PurchaseHistoryRecordUiModel
 import com.tatsuki.inappbilling.model.fake
 import com.tatsuki.inappbilling.ui.compose.util.HeaderItem
 import com.tatsuki.inappbilling.ui.compose.util.ItemBackground
+import com.tatsuki.inappbilling.ui.compose.util.PropertyText
 
 @Composable
 fun PurchaseHistoryRecordsScreen(
@@ -57,21 +56,19 @@ private fun PurchaseHistoryRecordItem(
   ) {
     Column(
       modifier = modifier.fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-      Text(
-        text = purchaseHistoryRecord.products.joinToString(separator = ","),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.productIds_label,
+        text = purchaseHistoryRecord.products.joinToString(separator = ",")
       )
-      Text(
-        text = purchaseHistoryRecord.quantity.toString(),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.quantity_label,
+        text = purchaseHistoryRecord.quantity.toString()
       )
-      Text(
-        text = purchaseHistoryRecord.purchaseTime.toString(),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+      PropertyText(
+        labelId = R.string.purchase_time_label,
+        text = purchaseHistoryRecord.purchaseTime.toString()
       )
     }
   }
