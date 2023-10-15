@@ -1,6 +1,9 @@
 package com.tatsuki.inappbilling.ui.compose
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,11 +34,18 @@ fun AppDrawerContent(
   onClickMenuItem: (menuItem: MenuItem) -> Unit,
 ) {
   ModalDrawerSheet() {
-    Text(
-      text = stringResource(id = R.string.app_menu),
-      modifier = Modifier.padding(16.dp),
-      style = MaterialTheme.typography.headlineSmall,
-    )
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(color = MaterialTheme.colorScheme.primary)
+    ) {
+      Text(
+        text = stringResource(id = R.string.app_menu),
+        modifier = Modifier.padding(16.dp),
+        color = MaterialTheme.colorScheme.onPrimary,
+        style = MaterialTheme.typography.headlineSmall,
+      )
+    }
     MenuItem.values().forEach {
       Divider()
       NavigationDrawerItem(
