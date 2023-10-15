@@ -1,10 +1,12 @@
 import java.io.FileInputStream
 import java.util.Properties
 
+// FIXME: This is a workaround
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-  id("com.android.application")
-  id("org.jetbrains.kotlin.android")
-  id("com.google.dagger.hilt.android")
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin)
+  alias(libs.plugins.dagger.hilt)
   kotlin("kapt")
 }
 
@@ -83,26 +85,29 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":feature"))
-//  implementation("com.github.TatsukiIshijima.google-billing:core:change-multi-module-SNAPSHOT")
-//  implementation("com.github.TatsukiIshijima.google-billing:feature:change-multi-module-SNAPSHOT")
-  //  implementation("com.github.TatsukiIshijima:google-billing:0.0.2")
-  implementation("androidx.core:core-ktx:1.10.1")
-  implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-  implementation("androidx.activity:activity-compose:1.7.2")
-  implementation(platform("androidx.compose:compose-bom:2022.10.00"))
-  implementation("androidx.compose.ui:ui")
-  implementation("androidx.compose.ui:ui-graphics")
-  implementation("androidx.compose.ui:ui-tooling-preview")
-  implementation("androidx.compose.material3:material3")
-  implementation("com.google.dagger:hilt-android:2.45")
-  kapt("com.google.dagger:hilt-android-compiler:2.45")
-  testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-  androidTestImplementation(platform("androidx.compose:compose-bom:2022.10.00"))
-  androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-  debugImplementation("androidx.compose.ui:ui-tooling")
-  debugImplementation("androidx.compose.ui:ui-test-manifest")
+//  implementation("com.github.TatsukiIshijima.google-billing:core:version")
+//  implementation("com.github.TatsukiIshijima.google-billing:feature:version")
+
+  implementation(libs.androidx.activity.compose)
+  implementation(libs.androidx.compose.bom)
+  implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.compose.ui)
+  implementation(libs.androidx.compose.ui.graphics)
+  implementation(libs.androidx.compose.ui.tooling.preview)
+  implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.lifecycle.runtime.ktx)
+  implementation(libs.dagger.hilt)
+  kapt(libs.dagger.hilt.compiler)
+  
+  testImplementation(libs.junit)
+
+  androidTestImplementation(libs.androidx.test.ext.junit)
+  androidTestImplementation(libs.androidx.test.espresso.core)
+  androidTestImplementation(libs.androidx.compose.bom)
+  androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+  debugImplementation(libs.androidx.compose.ui.tooling)
+  debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 kapt {
