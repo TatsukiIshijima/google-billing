@@ -6,6 +6,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchaseHistoryRecord
 import com.tatsuki.billing.feature.model.type.ConnectionState
 import com.tatsuki.billing.feature.GoogleBillingService
 import com.tatsuki.billing.feature.GoogleBillingServiceException
@@ -30,6 +31,8 @@ class BillingClientLifecycle @Inject constructor(
     CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ) : DefaultLifecycleObserver {
 
+  val mutablePurchases = MutableStateFlow(emptyList<Purchase>())
+  val mutablePurchaseHistoryRecords = MutableStateFlow(emptyList<PurchaseHistoryRecord>())
   val mutableProductDetailsWithSubscriptionList = MutableStateFlow(emptyList<ProductDetails>())
   val mutableProductDetailsWithInAppItemList = MutableStateFlow(emptyList<ProductDetails>())
 
@@ -53,6 +56,29 @@ class BillingClientLifecycle @Inject constructor(
 
   override fun onDestroy(owner: LifecycleOwner) {
     googleBillingService.disconnect()
+  }
+
+  suspend fun queryAllPurchases() {
+    try {
+      val subscriptionsPurchases = googleBillingService.queryPurchases(ProductType.Subscription())
+      val consumablePurchases = googleBillingService.queryPurchases(ProductType.InApp())
+      mutablePurchases.value = subscriptionsPurchases + consumablePurchases
+    } catch (e: GoogleBillingServiceException) {
+      Log.e(TAG, "$e")
+    }
+  }
+
+  suspend fun queryPurchaseHistoryRecords() {
+    try {
+      val subscriptionPurchaseHistoryRecords =
+        googleBillingService.queryPurchaseHistory(ProductType.Subscription())
+      val consumablePurchaseHistoryRecords =
+        googleBillingService.queryPurchaseHistory(ProductType.InApp())
+      mutablePurchaseHistoryRecords.value =
+        subscriptionPurchaseHistoryRecords + consumablePurchaseHistoryRecords
+    } catch (e: GoogleBillingServiceException) {
+      Log.e(TAG, "$e")
+    }
   }
 
   suspend fun purchaseSubscription(

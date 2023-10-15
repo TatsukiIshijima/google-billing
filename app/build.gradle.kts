@@ -85,8 +85,8 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":feature"))
-//  implementation("com.github.TatsukiIshijima.google-billing:core:version")
-//  implementation("com.github.TatsukiIshijima.google-billing:feature:version")
+//  implementation("com.github.TatsukiIshijima.google-billing:core:$version")
+//  implementation("com.github.TatsukiIshijima.google-billing:feature:$version")
 
   implementation(libs.androidx.activity.compose)
   implementation(libs.androidx.compose.bom)
@@ -98,7 +98,9 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.dagger.hilt)
   kapt(libs.dagger.hilt.compiler)
-  
+
+  implementation("androidx.navigation:navigation-compose:2.7.4")
+
   testImplementation(libs.junit)
 
   androidTestImplementation(libs.androidx.test.ext.junit)

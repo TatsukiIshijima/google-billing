@@ -1,5 +1,6 @@
 package com.tatsuki.inappbilling.ui.compose.subscription
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,16 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tatsuki.inappbilling.R
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
 import com.tatsuki.inappbilling.model.SubscriptionOfferDetailUiModel
 import com.tatsuki.inappbilling.ui.compose.util.HeaderItem
 import com.tatsuki.inappbilling.ui.compose.util.ItemBackground
+import com.tatsuki.inappbilling.ui.compose.util.PropertyText
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 
 @Composable
@@ -93,27 +94,28 @@ private fun SubscriptionOfferDetailsItemBody(
       ) {
         Column(
           modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+          verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-          Text(
+          PropertyText(
+            labelId = R.string.productId_label,
             text = productDetails.productId,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
           )
-          Text(
-            text = productDetails.productType,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+          PropertyText(
+            labelId = R.string.product_type_label,
+            text = productDetails.productType
           )
-          Text(
+          PropertyText(
+            labelId = R.string.base_plan_id_label,
             text = subscriptionOfferDetail.basePlanId,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
           )
-          Text(
-            text = subscriptionOfferDetail.offerId,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+          PropertyText(
+            labelId = R.string.offer_id_label,
+            text = subscriptionOfferDetail.offerId
           )
-          Text(
-            text = subscriptionOfferDetail.pricingPhase.formattedPrice,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+          PropertyText(
+            labelId = R.string.price_label,
+            text = subscriptionOfferDetail.pricingPhase.formattedPrice
           )
         }
       }
