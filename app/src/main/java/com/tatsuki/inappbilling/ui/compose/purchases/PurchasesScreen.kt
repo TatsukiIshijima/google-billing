@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tatsuki.billing.feature.model.type.PurchaseState
 import com.tatsuki.inappbilling.R
+import com.tatsuki.inappbilling.extension.toDateString
 import com.tatsuki.inappbilling.model.PurchaseUiModel
 import com.tatsuki.inappbilling.model.fake
 import com.tatsuki.inappbilling.ui.compose.util.HeaderItem
@@ -74,7 +75,7 @@ private fun PurchaseItem(
       )
       PropertyText(
         labelId = R.string.purchase_time_label,
-        text = purchase.purchaseTime.toString()
+        text = purchase.purchaseTime.toDateString()
       )
       PropertyText(
         labelId = R.string.order_id_label,
