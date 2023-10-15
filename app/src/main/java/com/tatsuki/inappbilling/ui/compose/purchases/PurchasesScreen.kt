@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,8 +21,13 @@ import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 @Composable
 fun PurchasesScreen(
   modifier: Modifier = Modifier,
-  purchases: List<PurchaseUiModel>
+  purchases: List<PurchaseUiModel>,
+  queryPurchases: suspend () -> Unit = {},
 ) {
+  LaunchedEffect(Unit) {
+    queryPurchases()
+  }
+
   LazyColumn(
     modifier = modifier
       .fillMaxWidth()
@@ -70,6 +76,11 @@ private fun PurchaseItem(
       )
       Text(
         text = purchase.orderId ?: "-",
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onPrimaryContainer
+      )
+      Text(
+        text = purchase.isAcknowledged.toString(),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onPrimaryContainer
       )

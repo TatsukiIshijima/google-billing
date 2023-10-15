@@ -25,9 +25,12 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.tatsuki.inappbilling.BillingClientLifecycle
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
+import com.tatsuki.inappbilling.model.PurchaseUiModel
 import com.tatsuki.inappbilling.ui.compose.home.HomeScreen
+import com.tatsuki.inappbilling.ui.compose.purchases.PurchasesScreen
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 import com.tatsuki.inappbilling.viewmodel.MainViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +86,7 @@ fun InAppBillingApp(
   }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 private fun InAppBillingAppNavigation(
   navHostController: NavHostController,
@@ -153,7 +157,15 @@ private fun InAppBillingAppNavigation(
       )
     }
     composable(Screen.Purchases.route) {
-
+      val purchases: List<Purchase> by mainViewModel.purchasesMutableList.collectAsState()
+      PurchasesScreen(
+        purchases = purchases.map { purchase ->
+          PurchaseUiModel.from(purchase)
+        },
+        queryPurchases = {
+          billingClientLifecycle.queryAllPurchases()
+        }
+      )
     }
     composable(Screen.PurchaseHistoryRecords.route) {
 

@@ -30,6 +30,7 @@ class BillingClientLifecycle @Inject constructor(
     CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ) : DefaultLifecycleObserver {
 
+  val mutablePurchases = MutableStateFlow(emptyList<Purchase>())
   val mutableProductDetailsWithSubscriptionList = MutableStateFlow(emptyList<ProductDetails>())
   val mutableProductDetailsWithInAppItemList = MutableStateFlow(emptyList<ProductDetails>())
 
@@ -53,6 +54,16 @@ class BillingClientLifecycle @Inject constructor(
 
   override fun onDestroy(owner: LifecycleOwner) {
     googleBillingService.disconnect()
+  }
+
+  suspend fun queryAllPurchases() {
+    try {
+      val subscriptionsPurchases = googleBillingService.queryPurchases(ProductType.Subscription())
+      val consumablePurchases = googleBillingService.queryPurchases(ProductType.InApp())
+      mutablePurchases.value = subscriptionsPurchases + consumablePurchases
+    } catch (e: GoogleBillingServiceException) {
+      Log.e(TAG, "$e")
+    }
   }
 
   suspend fun purchaseSubscription(
