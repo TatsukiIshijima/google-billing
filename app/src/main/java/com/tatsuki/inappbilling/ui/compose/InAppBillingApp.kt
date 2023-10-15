@@ -23,10 +23,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchaseHistoryRecord
 import com.tatsuki.inappbilling.BillingClientLifecycle
 import com.tatsuki.inappbilling.model.ProductDetailsUiModel
+import com.tatsuki.inappbilling.model.PurchaseHistoryRecordUiModel
 import com.tatsuki.inappbilling.model.PurchaseUiModel
 import com.tatsuki.inappbilling.ui.compose.home.HomeScreen
+import com.tatsuki.inappbilling.ui.compose.purchasehistoryrecords.PurchaseHistoryRecordsScreen
 import com.tatsuki.inappbilling.ui.compose.purchases.PurchasesScreen
 import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 import com.tatsuki.inappbilling.viewmodel.MainViewModel
@@ -157,7 +160,7 @@ private fun InAppBillingAppNavigation(
       )
     }
     composable(Screen.Purchases.route) {
-      val purchases: List<Purchase> by mainViewModel.purchasesMutableList.collectAsState()
+      val purchases: List<Purchase> by mainViewModel.purchases.collectAsState()
       PurchasesScreen(
         purchases = purchases.map { purchase ->
           PurchaseUiModel.from(purchase)
@@ -168,7 +171,15 @@ private fun InAppBillingAppNavigation(
       )
     }
     composable(Screen.PurchaseHistoryRecords.route) {
-
+      val purchaseHistoryRecords: List<PurchaseHistoryRecord> by mainViewModel.purchaseHistoryRecords.collectAsState()
+      PurchaseHistoryRecordsScreen(
+        purchaseHistoryRecords = purchaseHistoryRecords.map { purchaseHistoryRecord ->
+          PurchaseHistoryRecordUiModel.from(purchaseHistoryRecord)
+        },
+        queryPurchaseHistoryRecords = {
+          billingClientLifecycle.queryPurchaseHistoryRecords()
+        }
+      )
     }
   }
 }
