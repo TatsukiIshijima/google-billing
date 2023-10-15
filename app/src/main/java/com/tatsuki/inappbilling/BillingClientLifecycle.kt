@@ -23,6 +23,7 @@ import javax.inject.Singleton
  * https://github.com/android/play-billing-samples/blob/main/ClassyTaxiAppKotlin/app/src/main/java/com/example/billing/gpbl/BillingClientLifecycle.kt
  */
 
+@Singleton
 class BillingClientLifecycle @Inject constructor(
   private val googleBillingService: GoogleBillingService,
   private val coroutineScope: CoroutineScope =

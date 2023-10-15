@@ -13,6 +13,7 @@ import javax.inject.Singleton
 object BillingClientLifecycleModule {
 
   @Provides
+  @Singleton
   fun provideBillingLifecycle(
     googleBillingService: GoogleBillingService,
   ): BillingClientLifecycle {
