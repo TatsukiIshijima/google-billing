@@ -23,14 +23,23 @@ enum class MenuItem(
   val index: Int,
   @StringRes val titleResId: Int,
 ) {
-  PURCHASES(0, R.string.menu_item_purchases),
-  PURCHASE_HISTORY_RECORDS(1, R.string.menu_item_purchase_history_records)
+  HOME(0, R.string.menu_item_home),
+  PURCHASES(1, R.string.menu_item_purchases),
+  PURCHASE_HISTORY_RECORDS(2, R.string.menu_item_purchase_history_records)
   ;
+}
+
+fun MenuItem.toScreen(): Screen {
+  return when (this) {
+    MenuItem.HOME -> Screen.Home
+    MenuItem.PURCHASES -> Screen.Purchases
+    MenuItem.PURCHASE_HISTORY_RECORDS -> Screen.PurchaseHistoryRecords
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppDrawerContent(
+fun InAppBillingAppMenuDrawer(
   onClickMenuItem: (menuItem: MenuItem) -> Unit,
 ) {
   ModalDrawerSheet() {
@@ -66,7 +75,7 @@ fun AppDrawerContent(
 @Composable
 private fun PreviewDrawerMenu() {
   InAppBillingTheme {
-    AppDrawerContent(
+    InAppBillingAppMenuDrawer(
       onClickMenuItem = {}
     )
   }

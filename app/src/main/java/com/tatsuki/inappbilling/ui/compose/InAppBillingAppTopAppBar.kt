@@ -1,4 +1,4 @@
-package com.tatsuki.inappbilling.ui.compose.home
+package com.tatsuki.inappbilling.ui.compose
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -17,7 +17,7 @@ import com.tatsuki.inappbilling.ui.theme.InAppBillingTheme
 
 @ExperimentalMaterial3Api
 @Composable
-fun HomeTopAppBar(
+fun InAppBillingAppTopAppBar(
   onMenuClick: () -> Unit = { }
 ) {
   TopAppBar(
@@ -47,6 +47,6 @@ fun HomeTopAppBar(
 @Composable
 private fun PreviewHomeTopAppBar() {
   InAppBillingTheme {
-    HomeTopAppBar()
+    InAppBillingAppTopAppBar()
   }
 }
