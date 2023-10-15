@@ -96,10 +96,9 @@ dependencies {
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.ktx)
+  implementation(libs.androidx.navigation.navigation.compose)
   implementation(libs.dagger.hilt)
   kapt(libs.dagger.hilt.compiler)
-
-  implementation("androidx.navigation:navigation-compose:2.7.4")
 
   testImplementation(libs.junit)
 
