@@ -1,9 +1,11 @@
 import java.io.FileInputStream
 import java.util.Properties
 
+// FIXME: This is a workaround
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-  id("com.android.library")
-  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin)
   id("maven-publish")
 }
 
@@ -41,12 +43,12 @@ android {
 dependencies {
   implementation(project(":core"))
   testImplementation(project(":fake"))
-  testImplementation("junit:junit:4.13.2")
-  testImplementation("androidx.fragment:fragment-ktx:1.6.1")
-  testImplementation("androidx.test.ext:junit-ktx:1.1.5")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
-  testImplementation("org.robolectric:robolectric:4.9")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
+  testImplementation(libs.junit)
+  testImplementation(libs.androidx.fragment.ktx)
+  testImplementation(libs.androidx.test.ext.junit.ktx)
+  testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.androidx.test.ext.junit)
 }
 
 publishing {

@@ -1,9 +1,11 @@
 import java.io.FileInputStream
 import java.util.Properties
 
+// FIXME: This is a workaround
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-  id("com.android.library")
-  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin)
   id("maven-publish")
 }
 
@@ -40,8 +42,8 @@ android {
 
 dependencies {
 
-  api("com.android.billingclient:billing:6.0.1")
-  api("com.android.billingclient:billing-ktx:6.0.1")
+  api(libs.android.billingclient.billing)
+  api(libs.android.billingclient.billing.ktx)
 }
 
 publishing {

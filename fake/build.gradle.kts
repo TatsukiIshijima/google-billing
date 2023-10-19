@@ -1,9 +1,11 @@
 import java.io.FileInputStream
 import java.util.Properties
 
+// FIXME: This is a workaround
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-  id("com.android.library")
-  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin)
   id("maven-publish")
 }
 
@@ -44,12 +46,11 @@ android {
 }
 
 dependencies {
-//  implementation("com.github.TatsukiIshijima:google-billing:core:change-multi-module-SNAPSHOT")
   implementation(project(":core"))
-  implementation("com.google.code.gson:gson:2.10.1")
-  testImplementation("org.json:json:20230618")
-  testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
+  implementation(libs.gson)
+  testImplementation(libs.json)
+  testImplementation(libs.junit)
+  androidTestImplementation(libs.androidx.test.ext.junit)
 }
 
 publishing {
