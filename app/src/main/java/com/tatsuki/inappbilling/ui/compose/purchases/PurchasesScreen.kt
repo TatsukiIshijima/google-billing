@@ -85,6 +85,18 @@ private fun PurchaseItem(
         labelId = R.string.is_acknowledged_label,
         text = purchase.isAcknowledged.toString()
       )
+      PropertyText(
+        labelId = R.string.is_auto_renewing_label,
+        text = purchase.isAutoRenew.toString()
+      )
+      PropertyText(
+        labelId = R.string.purchase_token_label,
+        text = purchase.purchaseToken
+      )
+      PropertyText(
+        labelId = R.string.signature_label,
+        text = purchase.signature,
+      )
     }
   }
 }
