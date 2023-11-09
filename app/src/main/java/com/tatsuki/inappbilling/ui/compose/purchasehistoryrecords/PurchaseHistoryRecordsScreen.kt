@@ -71,6 +71,14 @@ private fun PurchaseHistoryRecordItem(
         labelId = R.string.purchase_time_label,
         text = purchaseHistoryRecord.purchaseTime.toDateString()
       )
+      PropertyText(
+        labelId = R.string.purchase_token_label,
+        text = purchaseHistoryRecord.purchaseToken
+      )
+      PropertyText(
+        labelId = R.string.signature_label,
+        text = purchaseHistoryRecord.signature
+      )
     }
   }
 }
