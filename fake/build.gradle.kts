@@ -47,9 +47,10 @@ dependencies {
 //  implementation("com.github.TatsukiIshijima:google-billing:core:change-multi-module-SNAPSHOT")
   implementation(project(":core"))
   implementation("com.google.code.gson:gson:2.10.1")
+  implementation("androidx.test.ext:junit-ktx:1.1.5")
   testImplementation("org.json:json:20230618")
   testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
+  testImplementation("org.robolectric:robolectric:4.9")
 }
 
 publishing {
