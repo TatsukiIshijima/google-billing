@@ -40,8 +40,8 @@ android {
 
 dependencies {
 
-  api("com.android.billingclient:billing:6.0.1")
-  api("com.android.billingclient:billing-ktx:6.0.1")
+  api("com.android.billingclient:billing:7.0.0")
+  api("com.android.billingclient:billing-ktx:7.0.0")
 }
 
 publishing {
