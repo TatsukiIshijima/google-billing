@@ -1,5 +1,6 @@
 package com.tatsuki.billing
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tatsuki.billing.fake.model.FakeOneTimePurchaseOfferDetails
 import com.tatsuki.billing.fake.model.FakePricingPhase
 import com.tatsuki.billing.fake.model.FakePricingPhases
@@ -8,7 +9,9 @@ import com.tatsuki.billing.fake.model.FakePurchase
 import com.tatsuki.billing.fake.model.FakePurchaseHistoryRecord
 import com.tatsuki.billing.fake.model.FakeSubscriptionOfferDetails
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class CreateFakeModelTest {
 
   @Test

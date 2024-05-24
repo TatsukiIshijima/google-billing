@@ -2,6 +2,7 @@ package com.tatsuki.billing.fake.model
 
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.Purchase.PurchaseState
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 
@@ -19,7 +20,11 @@ data class FakePurchase(
 
   fun toReal(): Purchase {
     val jsonPurchaseInfo = JSONObject().apply {
-      put("productId", products.first())
+      val jsonArray = JSONArray()
+      products.forEach { productId ->
+        jsonArray.put(productId)
+      }
+      put("productIds", jsonArray)
       put("quantity", quantity)
       put("purchaseTime", purchaseTime)
       put("developerPayload", developerPayload)
