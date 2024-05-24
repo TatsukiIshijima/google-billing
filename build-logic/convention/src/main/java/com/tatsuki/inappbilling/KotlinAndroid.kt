@@ -47,18 +47,6 @@ internal fun Project.configureKotlinAndroid(
 }
 
 /**
- * Configure base Kotlin options for JVM (non-Android)
- */
-//internal fun Project.configureKotlinJvm() {
-//  extensions.configure<JavaPluginExtension> {
-//    sourceCompatibility = JavaVersion.VERSION_1_8
-//    targetCompatibility = JavaVersion.VERSION_1_8
-//  }
-//
-//  configureKotlin()
-//}
-
-/**
  * Configure base Kotlin options
  */
 private fun Project.configureKotlin() {

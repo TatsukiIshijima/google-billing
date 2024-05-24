@@ -67,5 +67,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 inappbilling-android-application = { id = "inappbilling.android.application", version = "unspecified" }
 inappbilling-android-application-compose = { id = "inappbilling.android.application.compose", version = "unspecified" }
 inappbilling-android-library = { id = "inappbilling.android.library", version = "unspecified" }
-inappbilling-android-feature = { id = "inappbilling.android.feature", version = "unspecified" }
 inappbilling-android-hilt = { id = "inappbilling.android.hilt", version = "unspecified" }

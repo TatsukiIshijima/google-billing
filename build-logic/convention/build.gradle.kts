@@ -38,10 +38,6 @@ gradlePlugin {
       id = "inappbilling.android.library"
       implementationClass = "AndroidLibraryConventionPlugin"
     }
-    register("androidFeature") {
-      id = "inappbilling.android.feature"
-      implementationClass = "AndroidFeatureConventionPlugin"
-    }
     register("androidHilt") {
       id = "inappbilling.android.hilt"
       implementationClass = "AndroidHiltConventionPlugin"
