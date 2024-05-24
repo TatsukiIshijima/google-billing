@@ -31,8 +31,8 @@ dependencies {
   implementation(libs.gson)
   testImplementation(libs.json)
   testImplementation(libs.junit)
+  testImplementation(libs.robolectric)
   androidTestImplementation(libs.androidx.test.ext.junit)
-  testImplementation("org.robolectric:robolectric:4.9")
 }
 
 publishing {
