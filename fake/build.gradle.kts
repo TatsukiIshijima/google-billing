@@ -29,10 +29,10 @@ android {
 dependencies {
   implementation(project(":core"))
   implementation(libs.gson)
+  testImplementation(libs.androidx.test.ext.junit.ktx)
   testImplementation(libs.json)
   testImplementation(libs.junit)
   testImplementation(libs.robolectric)
-  androidTestImplementation(libs.androidx.test.ext.junit)
 }
 
 publishing {
