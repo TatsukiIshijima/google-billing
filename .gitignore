@@ -12,5 +12,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+keystore.properties
+keystore.jks
 
 /app/release
+
+google-billing-service-account-key.json

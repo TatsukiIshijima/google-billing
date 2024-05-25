@@ -1,0 +1,61 @@
+name: "Build"
+description: "Build the project and run local tests"
+inputs:
+  encoded_keystore:
+    required: true
+    description: "Base64 encoded keystore file"
+  keystore_password:
+    required: true
+    description: "Keystore password"
+  key_password:
+    required: true
+    description: "Key password"
+  keystore_alias:
+    required: true
+    description: "Keystore alias"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Validate Gradle Wrapper
+      uses: gradle/actions/wrapper-validation@v3
+
+    - name: Copy CI gradle.properties
+      run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+      shell: bash
+
+    # Decode keystore file encoded by base64
+    - name: Decode Keystore
+      run: |
+        echo ${{ inputs.encoded_keystore }} | base64 --d > keystore.jks
+      shell: bash
+
+    # Keystore properties write in keystore.properties
+    - name: Set up keystore.properties
+      run: |
+        echo "storePassword=${{ inputs.keystore_password }}" >> keystore.properties
+        echo "keyPassword=${{ inputs.key_password }}" >> keystore.properties
+        echo "keyAlias=${{ inputs.keystore_alias }}" >> keystore.properties  
+        echo "storeFile=`pwd`/keystore.jks" >> ./keystore.properties
+      shell: bash
+
+    - name: Setup JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu' # See 'Supported distributions' for available options
+        java-version: '17'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    # Run tests assemble
+    - name: Run local tests
+      run: ./gradlew testDebugUnitTest --stacktrace
+      shell: bash
+
+    # Create APK and AAB
+    - name: Build all assemble type and flavor permutations
+      run: |
+        ./gradlew :app:assemble
+        ./gradlew :app:bundle
+      shell: bash
