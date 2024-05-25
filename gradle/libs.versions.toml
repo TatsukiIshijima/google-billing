@@ -1,0 +1,72 @@
+[versions]
+android-billingclient = "6.0.1"
+android-gradke-plugin = "8.0.2"
+androidx-activity = "1.7.2"
+androidx-fragment = "1.6.1"
+# BOM to library version mapping
+# https://developer.android.com/jetpack/compose/bom/bom-mapping?hl=ja
+androidx-compose-bom = "2022.10.00"
+androidx-compose-material3 = "1.0.0"
+androidx-compose-ui = "1.3.0"
+androidx-core = "1.10.1"
+androidx-lifecycle = "2.6.1"
+androidx-navigation = "2.7.4"
+androidx-test-espresso = "3.5.1"
+androidx-test-ext = "1.1.5"
+compose-compiler = "1.4.6"
+hilt = "2.45"
+gradle-play-publisher = "3.9.1"
+gson = "2.10.1"
+junit = "4.13.2"
+kotlin = "1.8.20"
+kotlinx-coroutines = "1.7.2"
+ksp = "1.8.20-1.0.11"
+json = "20230618"
+robolectric = "4.9"
+
+[libraries]
+android-billingclient-billing = { module = "com.android.billingclient:billing", version.ref = "android-billingclient" }
+android-billingclient-billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "android-billingclient" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material3"}
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose-ui"}
+androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "androidx-compose-ui"}
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose-ui"}
+androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-compose-ui"}
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose-ui"}
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-compose-ui"}
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-navigation-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-test-espresso" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext" }
+androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-ext" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+json = { module = "org.json:json", version.ref = "json" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradke-plugin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-gradke-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradke-plugin" }
+dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+gradle-play-publisher = { id = "com.github.triplet.play", version.ref = "gradle-play-publisher" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# Plugins defined by this project
+inappbilling-android-application = { id = "inappbilling.android.application", version = "unspecified" }
+inappbilling-android-application-compose = { id = "inappbilling.android.application.compose", version = "unspecified" }
+inappbilling-android-library = { id = "inappbilling.android.library", version = "unspecified" }
+inappbilling-android-hilt = { id = "inappbilling.android.hilt", version = "unspecified" }
