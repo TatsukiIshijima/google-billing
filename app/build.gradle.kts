@@ -3,8 +3,9 @@ import java.util.Properties
 
 plugins {
   id("com.android.application")
-  id("org.jetbrains.kotlin.android")
+  id("com.github.triplet.play") version "3.9.1"
   id("com.google.dagger.hilt.android")
+  id("org.jetbrains.kotlin.android")
   kotlin("kapt")
 }
 
@@ -77,6 +78,10 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
+}
+
+play {
+    serviceAccountCredentials.set(rootProject.file("google-billing-service-account-key.json"))
 }
 
 dependencies {
