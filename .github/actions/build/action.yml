@@ -1,5 +1,18 @@
 name: "Build"
 description: "Build the project and run local tests"
+inputs:
+  encoded_keystore:
+    required: true
+    description: "Base64 encoded keystore file"
+  keystore_password:
+    required: true
+    description: "Keystore password"
+  key_password:
+    required: true
+    description: "Key password"
+  keystore_alias:
+    required: true
+    description: "Keystore alias"
 
 runs:
   using: 'composite'
