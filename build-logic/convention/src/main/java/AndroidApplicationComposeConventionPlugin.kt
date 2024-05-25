@@ -27,8 +27,8 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
     with(target) {
       plugins.apply("com.android.application")
 
-      val exception = extensions.getByType<ApplicationExtension>()
-      configureAndroidCompose(exception)
+      val extension = extensions.getByType<ApplicationExtension>()
+      configureAndroidCompose(extension)
     }
   }
 }
