@@ -14,3 +14,5 @@
 local.properties
 
 /app/release
+
+google-billing-service-account-key.json
