@@ -15,6 +15,7 @@ androidx-test-espresso = "3.5.1"
 androidx-test-ext = "1.1.5"
 compose-compiler = "1.4.6"
 hilt = "2.45"
+gradle-play-publisher = "3.9.1"
 gson = "2.10.1"
 junit = "4.13.2"
 kotlin = "1.8.20"
@@ -59,6 +60,7 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 android-application = { id = "com.android.application", version.ref = "android-gradke-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradke-plugin" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+gradle-play-publisher = { id = "com.github.triplet.play", version.ref = "gradle-play-publisher" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

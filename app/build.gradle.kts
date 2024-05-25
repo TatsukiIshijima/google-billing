@@ -4,10 +4,10 @@ import java.util.Properties
 // FIXME: This is a workaround
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-  id("com.github.triplet.play") version "3.9.1"
   alias(libs.plugins.inappbilling.android.application)
   alias(libs.plugins.inappbilling.android.application.compose)
   alias(libs.plugins.inappbilling.android.hilt)
+  alias(libs.plugins.gradle.play.publisher)
 }
 
 android {
