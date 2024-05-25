@@ -9,31 +9,32 @@ plugins {
   kotlin("kapt")
 }
 
-// If release build, please disable comment out.
-//val keystorePropertiesFile = rootProject.file("local.properties")
-//val keystoreProperties = Properties()
-//keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
 android {
   namespace = "com.tatsuki.inappbilling"
   compileSdk = 34
 
-  // If release build, please disable comment out.
-//  signingConfigs {
-//    create("release") {
-//      keyAlias = keystoreProperties["keyAlias"] as String
-//      keyPassword = keystoreProperties["keyPassword"] as String
-//      storeFile = file(keystoreProperties["storeFile"] as String)
-//      storePassword = keystoreProperties["storePassword"] as String
-//    }
-//  }
+  signingConfigs {
+    create("release") {
+      // If local build, create keystore.properties in the root of the project.
+      // And the store file path, store password, keyAlias, and keyPassword.
+      val keystorePropertiesFile = rootProject.file("keystore.properties")
+      if (keystorePropertiesFile.exists()) {
+        val keystoreProperties = Properties()
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+        storeFile = file(keystoreProperties["storeFile"] as String)
+        storePassword = keystoreProperties["storePassword"] as String
+        keyAlias = keystoreProperties["keyAlias"] as String
+        keyPassword = keystoreProperties["keyPassword"] as String
+      }
+    }
+  }
 
   defaultConfig {
     applicationId = "com.tatsuki.inappbilling"
     minSdk = 21
     targetSdk = 34
-    versionCode = 1
-    versionName = "0.1"
+    versionCode = 2
+    versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
@@ -53,8 +54,7 @@ android {
       isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
-      // If release build, please disable comment out.
-//      signingConfig = signingConfigs.getByName("release")
+      signingConfig = signingConfigs.getByName("release")
     }
   }
   compileOptions {

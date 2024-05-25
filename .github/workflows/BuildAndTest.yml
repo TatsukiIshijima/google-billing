@@ -27,3 +27,8 @@ jobs:
 
       - name: Run Build Action
         uses: ./.github/actions/build
+        with:
+          encoded_keystore: ${{ secrets.KEYSTORE }}
+          keystore_password: ${{ secrets.KEYSTORE_PASSWORD }}
+          key_password: ${{ secrets.KEY_PASSWORD }}
+          keystore_alias: ${{ secrets.KEYSTORE_ALIAS }}
