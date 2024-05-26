@@ -1,6 +1,6 @@
 [versions]
 android-billingclient = "6.0.1"
-android-gradke-plugin = "8.0.2"
+android-gradke-plugin = "8.4.1"
 androidx-activity = "1.7.2"
 androidx-fragment = "1.6.1"
 # BOM to library version mapping
