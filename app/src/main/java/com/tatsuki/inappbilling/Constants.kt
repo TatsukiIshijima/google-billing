@@ -16,6 +16,10 @@ object Constants {
   const val TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_4 = "test.inappbilling.subscription.plan4"
   const val TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_5 = "test.inappbilling.subscription.plan5"
 
+  const val TEST_IN_APP_BILLING_ESSENTIAL = "test.inappbilling.subscription.essential"
+  const val TEST_IN_APP_BILLING_EXTRA = "test.inappbilling.subscription.extra"
+  const val TEST_IN_APP_BILLING_PREMIUM = "test.inappbilling.subscription.premium"
+
   // PlanIds
   // Plan id same as plan id in this app.
   const val YEARLY_PLAN = "yearly-plan"
@@ -60,6 +64,18 @@ object Constants {
       ProductId(TEST_IN_APP_BILLING_SUBSCRIPTION_PLAN_5),
       ProductType.Subscription()
     ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_ESSENTIAL),
+      ProductType.Subscription()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_EXTRA),
+      ProductType.Subscription()
+    ),
+    Product(
+      ProductId(TEST_IN_APP_BILLING_PREMIUM),
+      ProductType.Subscription()
+    )
   )
 
   val InAppItemList = listOf(
