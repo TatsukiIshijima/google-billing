@@ -1,7 +1,7 @@
 [versions]
 android-billingclient = "6.2.1"
-android-gradke-plugin = "8.4.1"
-androidx-activity = "1.9.0"
+android-gradke-plugin = "8.4.2"
+androidx-activity = "1.9.3"
 androidx-fragment = "1.7.1"
 # BOM to library version mapping
 # https://developer.android.com/jetpack/compose/bom/bom-mapping?hl=ja
