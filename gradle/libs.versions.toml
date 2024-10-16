@@ -1,29 +1,29 @@
 [versions]
 android-billingclient = "6.2.1"
-android-gradke-plugin = "8.4.1"
+android-gradke-plugin = "8.7.1"
 androidx-activity = "1.9.0"
-androidx-fragment = "1.7.1"
+androidx-fragment = "1.8.4"
 # BOM to library version mapping
 # https://developer.android.com/jetpack/compose/bom/bom-mapping?hl=ja
-androidx-compose-bom = "2024.05.00"
+androidx-compose-bom = "2024.10.00"
 androidx-compose-material3 = "1.2.1"
 androidx-compose-ui = "1.6.7"
 androidx-core = "1.13.1"
 androidx-lifecycle = "2.8.1"
-androidx-navigation = "2.7.7"
-androidx-test-espresso = "3.5.1"
-androidx-test-ext = "1.1.5"
+androidx-navigation = "2.8.3"
+androidx-test-espresso = "3.6.1"
+androidx-test-ext = "1.2.1"
 # https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.5.14"
-hilt = "2.51.1"
-gradle-play-publisher = "3.9.1"
+hilt = "2.52"
+gradle-play-publisher = "3.11.0"
 gson = "2.11.0"
 junit = "4.13.2"
 kotlin = "1.9.24"
 kotlinx-coroutines = "1.8.1"
 ksp = "1.9.24-1.0.20"
 json = "20230618"
-robolectric = "4.12.2"
+robolectric = "4.13"
 
 [libraries]
 android-billingclient-billing = { module = "com.android.billingclient:billing", version.ref = "android-billingclient" }
