@@ -1,11 +1,11 @@
 [versions]
-android-billingclient = "6.2.1"
-android-gradke-plugin = "8.4.1"
+android-billingclient = "8.3.0"
+android-gradke-plugin = "9.1.0"
 androidx-activity = "1.9.0"
 androidx-fragment = "1.7.1"
 # BOM to library version mapping
 # https://developer.android.com/jetpack/compose/bom/bom-mapping?hl=ja
-androidx-compose-bom = "2024.05.00"
+androidx-compose-bom = "2026.03.00"
 androidx-compose-material3 = "1.2.1"
 androidx-compose-ui = "1.6.7"
 androidx-core = "1.13.1"
@@ -16,13 +16,13 @@ androidx-test-ext = "1.1.5"
 # https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.5.14"
 hilt = "2.51.1"
-gradle-play-publisher = "3.9.1"
+gradle-play-publisher = "4.0.0"
 gson = "2.11.0"
 junit = "4.13.2"
 kotlin = "1.9.24"
 kotlinx-coroutines = "1.8.1"
 ksp = "1.9.24-1.0.20"
-json = "20230618"
+json = "20231013"
 robolectric = "4.12.2"
 
 [libraries]
